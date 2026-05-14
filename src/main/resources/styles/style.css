@@ -1,0 +1,367 @@
+/* ============================================
+   SPORTAPP ADMIN PANEL - ESTILOS GLOBALES
+   ============================================ */
+
+/* Colores principales */
+:root {
+    -fx-primary: #2563EB;
+    -fx-primary-light: #3B82F6;
+    -fx-primary-dark: #1D4ED8;
+    -fx-primary-container: #DBEAFE;
+    -fx-white: #FFFFFF;
+    -fx-bg-light: #F8FAFC;
+    -fx-border: #E2E8F0;
+    -fx-text-light: #64748B;
+    -fx-text-dark: #1E293B;
+    -fx-text-darker: #1E293B;
+    -fx-red: #EF4444;
+    -fx-red-light: #FEE2E2;
+    -fx-green: #22C55E;
+    -fx-orange: #F97316;
+    -fx-purple: #A855F7;
+}
+
+/* Root styles */
+.root {
+    -fx-font-family: "Segoe UI", Arial, sans-serif;
+    -fx-font-size: 13;
+}
+
+/* ============================================
+   BOTONES
+   ============================================ */
+
+.button {
+    -fx-padding: 8 16;
+    -fx-font-size: 13;
+    -fx-border-radius: 5;
+    -fx-background-radius: 5;
+    -fx-cursor: hand;
+    -fx-text-fill: white;
+}
+
+.button:hover {
+    -fx-opacity: 0.9;
+}
+
+.button:pressed {
+    -fx-opacity: 0.8;
+}
+
+.button:disabled {
+    -fx-opacity: 0.5;
+    -fx-cursor: default;
+}
+
+/* Botón primario */
+.button-primary {
+    -fx-background-color: #2563EB;
+}
+
+/* Botón peligro */
+.button-danger {
+    -fx-background-color: #EF4444;
+}
+
+/* Botón secundario */
+.button-secondary {
+    -fx-background-color: transparent;
+    -fx-text-fill: #2563EB;
+    -fx-border-color: #2563EB;
+    -fx-border-width: 1;
+}
+
+/* ============================================
+   CAMPOS DE TEXTO
+   ============================================ */
+
+.text-field,
+.password-field {
+    -fx-padding: 10;
+    -fx-font-size: 12;
+    -fx-border-color: #E2E8F0;
+    -fx-border-radius: 5;
+    -fx-background-radius: 5;
+    -fx-text-fill: #1E293B;
+}
+
+.text-field:focused,
+.password-field:focused {
+    -fx-border-color: #2563EB;
+    -fx-border-width: 2;
+}
+
+/* ============================================
+   LABELS
+   ============================================ */
+
+.label {
+    -fx-text-fill: #1E293B;
+    -fx-font-size: 13;
+}
+
+.label-title {
+    -fx-font-size: 24;
+    -fx-font-weight: bold;
+    -fx-text-fill: #1E293B;
+}
+
+.label-subtitle {
+    -fx-font-size: 14;
+    -fx-font-weight: bold;
+    -fx-text-fill: #1E293B;
+}
+
+/* ============================================
+   CARDS
+   ============================================ */
+
+.card {
+    -fx-background-color: white;
+    -fx-padding: 20;
+    -fx-border-radius: 8;
+    -fx-background-radius: 8;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.05), 5, 0, 0, 2);
+}
+
+/* ============================================
+   TABLEVIEW
+   ============================================ */
+
+.table-view {
+    -fx-font-family: "Segoe UI";
+    -fx-font-size: 12;
+}
+
+.table-view:focused {
+    -fx-border-color: #2563EB;
+}
+
+.table-view .column-header {
+    -fx-background-color: #F8FAFC;
+    -fx-border-color: #E2E8F0;
+}
+
+.table-view .table-row-cell {
+    -fx-padding: 8;
+    -fx-border-color: #E2E8F0;
+}
+
+.table-view .table-row-cell:selected {
+    -fx-background-color: #DBEAFE;
+}
+
+.table-view .table-row-cell:hover {
+    -fx-background-color: #F0F4F8;
+}
+
+/* ============================================
+   COMBOBOX
+   ============================================ */
+
+.combo-box {
+    -fx-padding: 10;
+    -fx-font-size: 12;
+    -fx-border-color: #E2E8F0;
+    -fx-border-radius: 5;
+    -fx-background-radius: 5;
+}
+
+.combo-box:focused {
+    -fx-border-color: #2563EB;
+    -fx-border-width: 2;
+}
+
+/* ============================================
+   DATEPICKER
+   ============================================ */
+
+.date-picker {
+    -fx-padding: 10;
+    -fx-font-size: 12;
+    -fx-border-color: #E2E8F0;
+    -fx-border-radius: 5;
+    -fx-background-radius: 5;
+}
+
+.date-picker:focused {
+    -fx-border-color: #2563EB;
+    -fx-border-width: 2;
+}
+
+/* ============================================
+   SCROLLBAR
+   ============================================ */
+
+.scroll-bar {
+    -fx-font-size: 12;
+}
+
+.scroll-bar:vertical .increment-button,
+.scroll-bar:vertical .decrement-button,
+.scroll-bar:horizontal .increment-button,
+.scroll-bar:horizontal .decrement-button {
+    -fx-padding: 0;
+}
+
+.scroll-bar .thumb {
+    -fx-background-color: #CBD5E1;
+    -fx-background-radius: 5;
+}
+
+.scroll-bar .thumb:hover {
+    -fx-background-color: #94A3B8;
+}
+
+/* ============================================
+   MENÚ Y NAVEGACIÓN
+   ============================================ */
+
+.menu-bar {
+    -fx-background-color: #1E293B;
+}
+
+/* ============================================
+   ALERTS Y DIÁLOGOS
+   ============================================ */
+
+.dialog-pane {
+    -fx-padding: 20;
+    -fx-background-color: white;
+}
+
+.dialog-pane:header .header-panel {
+    -fx-padding: 10;
+}
+
+/* ============================================
+   CHARTS
+   ============================================ */
+
+.chart {
+    -fx-padding: 20;
+}
+
+.chart-title {
+    -fx-font-size: 14;
+    -fx-font-weight: bold;
+}
+
+.axis {
+    -fx-font-size: 11;
+    -fx-tick-label-fill: #64748B;
+}
+
+.axis-label {
+    -fx-font-size: 12;
+    -fx-text-fill: #1E293B;
+}
+
+/* ============================================
+   BARRAS DE PROGRESO
+   ============================================ */
+
+.progress-bar {
+    -fx-padding: 5;
+}
+
+.progress-bar .bar {
+    -fx-background-color: #2563EB;
+}
+
+/* ============================================
+   HOJAS DE PESTAÑAS
+   ============================================ */
+
+.tab-pane .tab-header-background {
+    -fx-background-color: #F8FAFC;
+}
+
+.tab-pane .tab {
+    -fx-padding: 10;
+    -fx-background-color: #E2E8F0;
+    -fx-border-radius: 5 5 0 0;
+}
+
+.tab-pane .tab:selected {
+    -fx-background-color: #2563EB;
+    -fx-text-fill: white;
+}
+
+/* ============================================
+   CUSTOM CLASSES
+   ============================================ */
+
+.login-card {
+    -fx-background-color: white;
+    -fx-padding: 40;
+    -fx-border-radius: 10;
+    -fx-background-radius: 10;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 10, 0, 0, 5);
+}
+
+.sidebar {
+    -fx-background-color: #1E293B;
+    -fx-text-fill: white;
+}
+
+.sidebar-header {
+    -fx-background-color: #0F172A;
+    -fx-padding: 20;
+    -fx-border-color: #334155;
+    -fx-border-width: 0 1 1 0;
+}
+
+.menu-item {
+    -fx-padding: 15;
+    -fx-background-color: #1E293B;
+    -fx-text-fill: white;
+    -fx-font-size: 13;
+    -fx-cursor: hand;
+}
+
+.menu-item:hover {
+    -fx-background-color: #334155;
+}
+
+.menu-item:focused {
+    -fx-background-color: #2563EB;
+}
+
+.content-area {
+    -fx-background-color: #F8FAFC;
+    -fx-padding: 30;
+}
+
+.badge-danger {
+    -fx-background-color: #EF4444;
+    -fx-text-fill: white;
+    -fx-padding: 4 8;
+    -fx-border-radius: 12;
+    -fx-font-size: 11;
+    -fx-font-weight: bold;
+}
+
+.badge-success {
+    -fx-background-color: #22C55E;
+    -fx-text-fill: white;
+    -fx-padding: 4 8;
+    -fx-border-radius: 12;
+    -fx-font-size: 11;
+    -fx-font-weight: bold;
+}
+
+.badge-warning {
+    -fx-background-color: #F97316;
+    -fx-text-fill: white;
+    -fx-padding: 4 8;
+    -fx-border-radius: 12;
+    -fx-font-size: 11;
+    -fx-font-weight: bold;
+}
+
+.separator-line {
+    -fx-border-color: #E2E8F0;
+    -fx-border-width: 0 0 1 0;
+    -fx-padding: 10;
+}
