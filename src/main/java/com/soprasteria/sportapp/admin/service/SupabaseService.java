@@ -19,7 +19,7 @@ public class SupabaseService {
     private static final Gson gson = new Gson();
 
     /**
-     * Construye los headers necesarios para las llamadas a Supabase.
+     * Construye los headers base para todas las llamadas a Supabase.
      */
     private static Headers.Builder getDefaultHeaders() {
         return new Headers.Builder()
@@ -29,17 +29,17 @@ public class SupabaseService {
     }
 
     /**
-     * Realiza una petición GET a una tabla de Supabase.
+     * GET — obtiene registros de una tabla.
      *
-     * @param table    Nombre de la tabla
-     * @param params   Parámetros de filtrado (ej: "select=*" o "id=eq.123")
-     * @return         CompletableFuture con el JsonArray de resultados
+     * @param table  Nombre de la tabla
+     * @param params Parámetros de filtrado (ej: "select=*" o "id=eq.123")
+     * @return CompletableFuture con el JsonArray de resultados
      */
     public static CompletableFuture<JsonArray> getFromTable(String table, String params) {
         return CompletableFuture.supplyAsync(() -> {
             try {
                 String url = SupabaseConfig.REST_URL + "/" + table;
-                if (params != null && !params.isEmpty()) {
+                if (params != null && !params.isBlank()) {
                     url += "?" + params;
                 }
 
@@ -64,11 +64,12 @@ public class SupabaseService {
     }
 
     /**
-     * Realiza una petición POST a una tabla de Supabase.
+     * POST — inserta un registro en una tabla.
+     * Usa Prefer: return=representation para que Supabase devuelva el objeto insertado.
      *
-     * @param table    Nombre de la tabla
-     * @param data     JsonObject con los datos a insertar
-     * @return         CompletableFuture con el JsonObject insertado
+     * @param table Nombre de la tabla
+     * @param data  JsonObject con los datos a insertar
+     * @return CompletableFuture con el JsonObject insertado
      */
     public static CompletableFuture<JsonObject> postToTable(String table, JsonObject data) {
         return CompletableFuture.supplyAsync(() -> {
@@ -82,7 +83,9 @@ public class SupabaseService {
 
                 Request request = new Request.Builder()
                         .url(url)
-                        .headers(getDefaultHeaders().build())
+                        .headers(getDefaultHeaders()
+                                .add("Prefer", "return=representation")
+                                .build())
                         .post(body)
                         .build();
 
@@ -91,9 +94,12 @@ public class SupabaseService {
                         throw new IOException("Error HTTP: " + response.code() + " - " + response.message());
                     }
 
-                    String bodyResponse = response.body() != null ? response.body().string() : "{}";
+                    String bodyResponse = response.body() != null ? response.body().string() : "[]";
+                    if (bodyResponse.isBlank() || bodyResponse.equals("null")) return data;
+
                     JsonArray resultArray = gson.fromJson(bodyResponse, JsonArray.class);
-                    return resultArray.size() > 0 ? resultArray.get(0).getAsJsonObject() : data;
+                    if (resultArray == null || resultArray.isEmpty()) return data;
+                    return resultArray.get(0).getAsJsonObject();
                 }
             } catch (Exception e) {
                 throw new RuntimeException("Error en POST " + table + ": " + e.getMessage(), e);
@@ -102,12 +108,12 @@ public class SupabaseService {
     }
 
     /**
-     * Realiza una petición PATCH a una tabla de Supabase.
+     * PATCH — actualiza registros de una tabla.
      *
-     * @param table    Nombre de la tabla
-     * @param filter   Filtro (ej: "id=eq.123")
-     * @param data     JsonObject con los datos a actualizar
-     * @return         CompletableFuture con el resultado
+     * @param table  Nombre de la tabla
+     * @param filter Filtro (ej: "id=eq.123")
+     * @param data   JsonObject con los datos a actualizar
+     * @return CompletableFuture con el JsonArray resultado
      */
     public static CompletableFuture<JsonArray> patchTable(String table, String filter, JsonObject data) {
         return CompletableFuture.supplyAsync(() -> {
@@ -121,7 +127,9 @@ public class SupabaseService {
 
                 Request request = new Request.Builder()
                         .url(url)
-                        .headers(getDefaultHeaders().build())
+                        .headers(getDefaultHeaders()
+                                .add("Prefer", "return=representation")
+                                .build())
                         .patch(body)
                         .build();
 
@@ -131,7 +139,10 @@ public class SupabaseService {
                     }
 
                     String bodyResponse = response.body() != null ? response.body().string() : "[]";
-                    return gson.fromJson(bodyResponse, JsonArray.class);
+                    if (bodyResponse.isBlank() || bodyResponse.equals("null")) return new JsonArray();
+
+                    JsonArray result = gson.fromJson(bodyResponse, JsonArray.class);
+                    return result != null ? result : new JsonArray();
                 }
             } catch (Exception e) {
                 throw new RuntimeException("Error en PATCH " + table + ": " + e.getMessage(), e);
@@ -140,11 +151,11 @@ public class SupabaseService {
     }
 
     /**
-     * Realiza una petición DELETE a una tabla de Supabase.
+     * DELETE — elimina registros de una tabla.
      *
-     * @param table    Nombre de la tabla
-     * @param filter   Filtro (ej: "id=eq.123")
-     * @return         CompletableFuture vacío
+     * @param table  Nombre de la tabla
+     * @param filter Filtro (ej: "id=eq.123")
+     * @return CompletableFuture vacío
      */
     public static CompletableFuture<Void> deleteFromTable(String table, String filter) {
         return CompletableFuture.runAsync(() -> {
@@ -169,7 +180,7 @@ public class SupabaseService {
     }
 
     /**
-     * Obtiene un Gson compartido para parsear JSON.
+     * Gson compartido para parsear JSON.
      */
     public static Gson getGson() {
         return gson;
