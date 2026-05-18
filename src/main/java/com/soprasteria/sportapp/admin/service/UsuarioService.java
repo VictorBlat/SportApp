@@ -15,6 +15,46 @@ import java.util.concurrent.CompletableFuture;
  */
 public class UsuarioService {
 
+    // ── Helpers null-safe ──────────────────────────────────────────────────
+
+    private static String getString(JsonObject obj, String key) {
+        return obj.has(key) && !obj.get(key).isJsonNull() ? obj.get(key).getAsString() : "";
+    }
+
+    private static int getInt(JsonObject obj, String key) {
+        return obj.has(key) && !obj.get(key).isJsonNull() ? obj.get(key).getAsInt() : 0;
+    }
+
+    private static boolean getBoolean(JsonObject obj, String key) {
+        return obj.has(key) && !obj.get(key).isJsonNull() && obj.get(key).getAsBoolean();
+    }
+
+    private static Usuario usuarioDesdeJson(JsonObject obj) {
+        return new Usuario(
+                getString(obj, "id"),
+                getString(obj, "nombre"),
+                getString(obj, "email"),
+                getString(obj, "ubicacion"),
+                getString(obj, "created_at"),
+                false
+        );
+    }
+
+    private static UsuarioBaneado baneadoDesdeJson(JsonObject obj) {
+        return new UsuarioBaneado(
+                getString(obj, "id"),
+                getString(obj, "usuario_id"),
+                "",
+                getString(obj, "motivo"),
+                getString(obj, "admin_id"),
+                "",
+                getString(obj, "fecha_baneo"),
+                getBoolean(obj, "activo")
+        );
+    }
+
+    // ── Usuarios ───────────────────────────────────────────────────────────
+
     /**
      * Obtiene la lista de todos los usuarios.
      *
@@ -29,18 +69,7 @@ public class UsuarioService {
 
                 List<Usuario> usuarios = new ArrayList<>();
                 if (resultado != null) {
-                    resultado.forEach(item -> {
-                        JsonObject obj = item.getAsJsonObject();
-                        Usuario usuario = new Usuario(
-                                obj.get("id").getAsString(),
-                                obj.get("nombre").getAsString(),
-                                obj.has("email") ? obj.get("email").getAsString() : "",
-                                obj.get("ubicacion").getAsString(),
-                                obj.get("created_at").getAsString(),
-                                false // Por defecto no baneado
-                        );
-                        usuarios.add(usuario);
-                    });
+                    resultado.forEach(item -> usuarios.add(usuarioDesdeJson(item.getAsJsonObject())));
                 }
                 return usuarios;
             } catch (Exception e) {
@@ -50,7 +79,7 @@ public class UsuarioService {
     }
 
     /**
-     * Busca usuarios por nombre o email.
+     * Busca usuarios por nombre.
      *
      * @param termino Término de búsqueda
      * @return CompletableFuture con lista de usuarios filtrados
@@ -58,23 +87,12 @@ public class UsuarioService {
     public static CompletableFuture<List<Usuario>> buscarUsuarios(String termino) {
         return CompletableFuture.supplyAsync(() -> {
             try {
-                String filtro = "or=(nombre.ilike.%" + termino + "%,email.ilike.%" + termino + "%)";
+                String filtro = "nombre=ilike.%" + termino + "%";
                 JsonArray resultado = SupabaseService.getFromTable("perfiles", filtro).get();
 
                 List<Usuario> usuarios = new ArrayList<>();
                 if (resultado != null) {
-                    resultado.forEach(item -> {
-                        JsonObject obj = item.getAsJsonObject();
-                        Usuario usuario = new Usuario(
-                                obj.get("id").getAsString(),
-                                obj.get("nombre").getAsString(),
-                                obj.has("email") ? obj.get("email").getAsString() : "",
-                                obj.get("ubicacion").getAsString(),
-                                obj.get("created_at").getAsString(),
-                                false
-                        );
-                        usuarios.add(usuario);
-                    });
+                    resultado.forEach(item -> usuarios.add(usuarioDesdeJson(item.getAsJsonObject())));
                 }
                 return usuarios;
             } catch (Exception e) {
@@ -93,28 +111,21 @@ public class UsuarioService {
         return CompletableFuture.supplyAsync(() -> {
             try {
                 JsonArray resultado = SupabaseService.getFromTable(
-                        "perfiles",
-                        "id=eq." + usuarioId
+                        "perfiles", "id=eq." + usuarioId
                 ).get();
 
-                if (resultado == null || resultado.size() == 0) {
+                if (resultado == null || resultado.isEmpty()) {
                     throw new Exception("Usuario no encontrado");
                 }
 
-                JsonObject obj = resultado.get(0).getAsJsonObject();
-                return new Usuario(
-                        obj.get("id").getAsString(),
-                        obj.get("nombre").getAsString(),
-                        obj.has("email") ? obj.get("email").getAsString() : "",
-                        obj.get("ubicacion").getAsString(),
-                        obj.get("created_at").getAsString(),
-                        false
-                );
+                return usuarioDesdeJson(resultado.get(0).getAsJsonObject());
             } catch (Exception e) {
                 throw new RuntimeException("Error obteniendo usuario: " + e.getMessage(), e);
             }
         });
     }
+
+    // ── Baneos ─────────────────────────────────────────────────────────────
 
     /**
      * Banea un usuario.
@@ -141,9 +152,9 @@ public class UsuarioService {
     }
 
     /**
-     * Desbanea un usuario.
+     * Desbanea un usuario (marca el registro de baneo como inactivo).
      *
-     * @param baneadoId ID del registro de baneo
+     * @param baneadoId ID del registro en usuario_baneado
      * @return CompletableFuture vacío
      */
     public static CompletableFuture<Void> desbanearUsuario(String baneadoId) {
@@ -160,10 +171,10 @@ public class UsuarioService {
     }
 
     /**
-     * Obtiene los baneos activos de un usuario.
+     * Obtiene los baneos activos de un usuario concreto.
      *
      * @param usuarioId ID del usuario
-     * @return CompletableFuture con lista de baneos
+     * @return CompletableFuture con lista de baneos activos
      */
     public static CompletableFuture<List<UsuarioBaneado>> obtenerBaneos(String usuarioId) {
         return CompletableFuture.supplyAsync(() -> {
@@ -173,24 +184,32 @@ public class UsuarioService {
 
                 List<UsuarioBaneado> baneos = new ArrayList<>();
                 if (resultado != null) {
-                    resultado.forEach(item -> {
-                        JsonObject obj = item.getAsJsonObject();
-                        UsuarioBaneado baneo = new UsuarioBaneado(
-                                obj.get("id").getAsString(),
-                                obj.get("usuario_id").getAsString(),
-                                "",
-                                obj.get("motivo").getAsString(),
-                                obj.get("admin_id").getAsString(),
-                                "",
-                                obj.get("fecha_baneo").getAsString(),
-                                obj.get("activo").getAsBoolean()
-                        );
-                        baneos.add(baneo);
-                    });
+                    resultado.forEach(item -> baneos.add(baneadoDesdeJson(item.getAsJsonObject())));
                 }
                 return baneos;
             } catch (Exception e) {
                 throw new RuntimeException("Error obteniendo baneos: " + e.getMessage(), e);
+            }
+        });
+    }
+
+    /**
+     * Obtiene todos los baneos activos (para el panel de usuarios).
+     *
+     * @return CompletableFuture con lista de todos los baneos activos
+     */
+    public static CompletableFuture<List<UsuarioBaneado>> obtenerTodosBaneos() {
+        return CompletableFuture.supplyAsync(() -> {
+            try {
+                JsonArray resultado = SupabaseService.getFromTable("usuario_baneado", "activo=eq.true").get();
+
+                List<UsuarioBaneado> baneos = new ArrayList<>();
+                if (resultado != null) {
+                    resultado.forEach(item -> baneos.add(baneadoDesdeJson(item.getAsJsonObject())));
+                }
+                return baneos;
+            } catch (Exception e) {
+                throw new RuntimeException("Error obteniendo todos los baneos: " + e.getMessage(), e);
             }
         });
     }

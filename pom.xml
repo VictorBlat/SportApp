@@ -21,12 +21,12 @@
 
     <repositories>
         <repository>
-            <id>maven-central</id>
-            <name>Maven Central</name>
+            <id>central</id>
+            <name>Maven Central Repository</name>
             <url>https://repo.maven.apache.org/maven2</url>
         </repository>
         <repository>
-            <id>nexus</id>
+            <id>nexus-soprasteria</id>
             <name>Nexus Soprasteria</name>
             <url>https://nexus.gva.es/content/groups/public</url>
         </repository>
@@ -34,19 +34,19 @@
 
     <pluginRepositories>
         <pluginRepository>
-            <id>maven-central</id>
-            <name>Maven Central</name>
+            <id>central</id>
+            <name>Maven Central Repository</name>
             <url>https://repo.maven.apache.org/maven2</url>
         </pluginRepository>
         <pluginRepository>
-            <id>nexus</id>
+            <id>nexus-soprasteria</id>
             <name>Nexus Soprasteria</name>
             <url>https://nexus.gva.es/content/groups/public</url>
         </pluginRepository>
     </pluginRepositories>
 
     <dependencies>
-        <!-- JavaFX -->
+        <!-- JavaFX Controllers -->
         <dependency>
             <groupId>org.openjfx</groupId>
             <artifactId>javafx-controls</artifactId>
@@ -147,6 +147,10 @@
                 <version>${javafx.maven.plugin.version}</version>
                 <configuration>
                     <mainClass>com.soprasteria.sportapp.admin.MainApp</mainClass>
+                    <options>
+                        <option>--add-modules</option>
+                        <option>javafx.controls,javafx.fxml,javafx.graphics,javafx.base,javafx.web,javafx.media</option>
+                    </options>
                 </configuration>
             </plugin>
 

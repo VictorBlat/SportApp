@@ -1,7 +1,7 @@
 package com.soprasteria.sportapp.admin.service;
 
-import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonArray;
 import com.soprasteria.sportapp.admin.model.SolicitudSoporte;
 
 import java.time.LocalDateTime;
@@ -15,11 +15,32 @@ import java.util.concurrent.CompletableFuture;
  */
 public class SoporteService {
 
+    // ── Helper null-safe ───────────────────────────────────────────────────
+
+    private static String getString(JsonObject obj, String key) {
+        return obj.has(key) && !obj.get(key).isJsonNull() ? obj.get(key).getAsString() : "";
+    }
+
+    private static SolicitudSoporte solicitudDesdeJson(JsonObject obj) {
+        return new SolicitudSoporte(
+                getString(obj, "id"),
+                getString(obj, "usuario_id"),
+                "",
+                getString(obj, "asunto"),
+                getString(obj, "descripcion"),
+                getString(obj, "estado"),
+                getString(obj, "created_at"),
+                obj.has("resuelto_at") && !obj.get("resuelto_at").isJsonNull()
+                        ? obj.get("resuelto_at").getAsString() : null
+        );
+    }
+
+    // ── Métodos públicos ───────────────────────────────────────────────────
+
     /**
      * Obtiene la lista de solicitudes de soporte.
      *
      * @param filtro Filtro opcional (ej: "estado=eq.pendiente")
-     * @return CompletableFuture con lista de solicitudes
      */
     public static CompletableFuture<List<SolicitudSoporte>> obtenerSolicitudes(String filtro) {
         return CompletableFuture.supplyAsync(() -> {
@@ -29,20 +50,8 @@ public class SoporteService {
 
                 List<SolicitudSoporte> solicitudes = new ArrayList<>();
                 if (resultado != null) {
-                    resultado.forEach(item -> {
-                        JsonObject obj = item.getAsJsonObject();
-                        SolicitudSoporte solicitud = new SolicitudSoporte(
-                                obj.get("id").getAsString(),
-                                obj.get("usuario_id").getAsString(),
-                                "",
-                                obj.get("asunto").getAsString(),
-                                obj.get("descripcion").getAsString(),
-                                obj.get("estado").getAsString(),
-                                obj.get("created_at").getAsString(),
-                                obj.has("resuelto_at") ? obj.get("resuelto_at").getAsString() : null
-                        );
-                        solicitudes.add(solicitud);
-                    });
+                    resultado.forEach(item ->
+                            solicitudes.add(solicitudDesdeJson(item.getAsJsonObject())));
                 }
                 return solicitudes;
             } catch (Exception e) {
@@ -53,33 +62,17 @@ public class SoporteService {
 
     /**
      * Obtiene una solicitud por su ID.
-     *
-     * @param solicitudId ID de la solicitud
-     * @return CompletableFuture con la solicitud
      */
     public static CompletableFuture<SolicitudSoporte> obtenerSolicitudPorId(String solicitudId) {
         return CompletableFuture.supplyAsync(() -> {
             try {
                 JsonArray resultado = SupabaseService.getFromTable(
-                        "solicitud_soporte",
-                        "id=eq." + solicitudId
-                ).get();
+                        "solicitud_soporte", "id=eq." + solicitudId).get();
 
-                if (resultado == null || resultado.size() == 0) {
+                if (resultado == null || resultado.isEmpty()) {
                     throw new Exception("Solicitud no encontrada");
                 }
-
-                JsonObject obj = resultado.get(0).getAsJsonObject();
-                return new SolicitudSoporte(
-                        obj.get("id").getAsString(),
-                        obj.get("usuario_id").getAsString(),
-                        "",
-                        obj.get("asunto").getAsString(),
-                        obj.get("descripcion").getAsString(),
-                        obj.get("estado").getAsString(),
-                        obj.get("created_at").getAsString(),
-                        obj.has("resuelto_at") ? obj.get("resuelto_at").getAsString() : null
-                );
+                return solicitudDesdeJson(resultado.get(0).getAsJsonObject());
             } catch (Exception e) {
                 throw new RuntimeException("Error obteniendo solicitud: " + e.getMessage(), e);
             }
@@ -88,10 +81,6 @@ public class SoporteService {
 
     /**
      * Actualiza el estado de una solicitud.
-     *
-     * @param solicitudId ID de la solicitud
-     * @param nuevoEstado Nuevo estado (pendiente, en_revision, resuelto)
-     * @return CompletableFuture vacío
      */
     public static CompletableFuture<Void> actualizarEstado(String solicitudId, String nuevoEstado) {
         return CompletableFuture.runAsync(() -> {
@@ -103,10 +92,9 @@ public class SoporteService {
                 JsonObject actualizado = new JsonObject();
                 actualizado.addProperty("estado", nuevoEstado);
 
-                // Si se marca como resuelto, añade timestamp
                 if ("resuelto".equals(nuevoEstado)) {
-                    DateTimeFormatter formatter = DateTimeFormatter.ISO_DATE_TIME;
-                    actualizado.addProperty("resuelto_at", LocalDateTime.now().format(formatter));
+                    actualizado.addProperty("resuelto_at",
+                            LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME));
                 }
 
                 SupabaseService.patchTable("solicitud_soporte", "id=eq." + solicitudId, actualizado).get();
@@ -116,42 +104,19 @@ public class SoporteService {
         });
     }
 
-    /**
-     * Marca una solicitud en revisión.
-     *
-     * @param solicitudId ID de la solicitud
-     * @return CompletableFuture vacío
-     */
     public static CompletableFuture<Void> marcarEnRevision(String solicitudId) {
         return actualizarEstado(solicitudId, "en_revision");
     }
 
-    /**
-     * Marca una solicitud como resuelta.
-     *
-     * @param solicitudId ID de la solicitud
-     * @return CompletableFuture vacío
-     */
     public static CompletableFuture<Void> marcarResuelta(String solicitudId) {
         return actualizarEstado(solicitudId, "resuelto");
     }
 
-    /**
-     * Obtiene el contador de solicitudes pendientes.
-     *
-     * @return CompletableFuture con el número de solicitudes pendientes
-     */
     public static CompletableFuture<Integer> obtenerCountPendientes() {
-        return obtenerSolicitudes("estado=eq.pendiente")
-                .thenApply(List::size);
+        return obtenerSolicitudes("estado=eq.pendiente").thenApply(List::size);
     }
 
-    /**
-     * Valida si el estado es válido.
-     */
     private static boolean esEstadoValido(String estado) {
-        return estado.equals("pendiente") ||
-               estado.equals("en_revision") ||
-               estado.equals("resuelto");
+        return "pendiente".equals(estado) || "en_revision".equals(estado) || "resuelto".equals(estado);
     }
 }
