@@ -3,34 +3,38 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.image.Image?>
 <HBox xmlns="http://javafx.com/javafx"
       xmlns:fx="http://javafx.com/fxml"
       fx:controller="com.soprasteria.sportapp.admin.controller.EventosEspecialesController"
       stylesheets="@../styles/style.css"
-      style="-fx-background-color: #F8FAFC;"
+      style="-fx-background-color: #FDF6EF;"
       prefWidth="1200" prefHeight="700">
 
     <!-- MENÚ LATERAL -->
-    <VBox spacing="0" style="-fx-background-color: #1E293B;" prefWidth="250">
-        <VBox spacing="10" style="-fx-padding: 20; -fx-background-color: #0F172A; -fx-border-color: #334155; -fx-border-width: 0 1 1 0;">
-            <Label text="SportApp Admin" style="-fx-text-fill: white; -fx-font-size: 16; -fx-font-weight: bold;"/>
-            <Label fx:id="nombreAdminLabel" text="Admin" style="-fx-text-fill: #94A3B8; -fx-font-size: 12;"/>
+    <VBox spacing="0" style="-fx-background-color: #2C1A0E;" prefWidth="250">
+        <VBox spacing="10" style="-fx-padding: 20; -fx-background-color: #1A0E06; -fx-border-color: #3D2410; -fx-border-width: 0 1 1 0;">
+            <ImageView fitWidth="140" fitHeight="50" preserveRatio="true">
+                <image><Image url="@../images/logo_normal.png"/></image>
+            </ImageView>
+            <Label fx:id="nombreAdminLabel" text="Admin" style="-fx-text-fill: #E88E51; -fx-font-size: 12;"/>
         </VBox>
         <Button text="📊 Dashboard"          onAction="#navToDashboard"
-                style="-fx-background-color: #1E293B; -fx-text-fill: white; -fx-padding: 15; -fx-alignment: CENTER_LEFT; -fx-font-size: 13; -fx-border-width: 0; -fx-cursor: hand;" maxWidth="Infinity"/>
+                style="-fx-background-color: #2C1A0E; -fx-text-fill: white; -fx-padding: 15; -fx-alignment: CENTER_LEFT; -fx-font-size: 13; -fx-border-width: 0; -fx-cursor: hand;" maxWidth="Infinity"/>
         <Button text="👥 Usuarios"           onAction="#navToUsuarios"
-                style="-fx-background-color: #1E293B; -fx-text-fill: white; -fx-padding: 15; -fx-alignment: CENTER_LEFT; -fx-font-size: 13; -fx-border-width: 0; -fx-cursor: hand;" maxWidth="Infinity"/>
+                style="-fx-background-color: #2C1A0E; -fx-text-fill: white; -fx-padding: 15; -fx-alignment: CENTER_LEFT; -fx-font-size: 13; -fx-border-width: 0; -fx-cursor: hand;" maxWidth="Infinity"/>
         <Button text="⚽ Eventos"            onAction="#navToEventos"
-                style="-fx-background-color: #1E293B; -fx-text-fill: white; -fx-padding: 15; -fx-alignment: CENTER_LEFT; -fx-font-size: 13; -fx-border-width: 0; -fx-cursor: hand;" maxWidth="Infinity"/>
+                style="-fx-background-color: #2C1A0E; -fx-text-fill: white; -fx-padding: 15; -fx-alignment: CENTER_LEFT; -fx-font-size: 13; -fx-border-width: 0; -fx-cursor: hand;" maxWidth="Infinity"/>
         <Button text="⭐ Eventos Especiales"
-                style="-fx-background-color: #2563EB; -fx-text-fill: white; -fx-padding: 15; -fx-alignment: CENTER_LEFT; -fx-font-size: 13; -fx-border-width: 0; -fx-cursor: hand;" maxWidth="Infinity"/>
+                style="-fx-background-color: #ED7D2A; -fx-text-fill: white; -fx-padding: 15; -fx-alignment: CENTER_LEFT; -fx-font-size: 13; -fx-border-width: 0; -fx-cursor: hand;" maxWidth="Infinity"/>
         <Button text="💬 Soporte"            onAction="#navToSoporte"
-                style="-fx-background-color: #1E293B; -fx-text-fill: white; -fx-padding: 15; -fx-alignment: CENTER_LEFT; -fx-font-size: 13; -fx-border-width: 0; -fx-cursor: hand;" maxWidth="Infinity"/>
+                style="-fx-background-color: #2C1A0E; -fx-text-fill: white; -fx-padding: 15; -fx-alignment: CENTER_LEFT; -fx-font-size: 13; -fx-border-width: 0; -fx-cursor: hand;" maxWidth="Infinity"/>
         <Button text="📈 Estadísticas"       onAction="#navToEstadisticas"
-                style="-fx-background-color: #1E293B; -fx-text-fill: white; -fx-padding: 15; -fx-alignment: CENTER_LEFT; -fx-font-size: 13; -fx-border-width: 0; -fx-cursor: hand;" maxWidth="Infinity"/>
+                style="-fx-background-color: #2C1A0E; -fx-text-fill: white; -fx-padding: 15; -fx-alignment: CENTER_LEFT; -fx-font-size: 13; -fx-border-width: 0; -fx-cursor: hand;" maxWidth="Infinity"/>
         <VBox VBox.vgrow="ALWAYS"/>
         <Button text="🚪 Cerrar sesión" onAction="#handleCerrarSesion"
-                style="-fx-background-color: #EF4444; -fx-text-fill: white; -fx-padding: 15; -fx-alignment: CENTER_LEFT; -fx-font-size: 13; -fx-border-width: 0; -fx-cursor: hand;" maxWidth="Infinity"/>
+                style="-fx-background-color: #E2257D; -fx-text-fill: white; -fx-padding: 15; -fx-alignment: CENTER_LEFT; -fx-font-size: 13; -fx-border-width: 0; -fx-cursor: hand;" maxWidth="Infinity"/>
     </VBox>
 
     <!-- CONTENIDO: tabla izquierda + formulario derecha -->
@@ -40,13 +44,13 @@
         <VBox fx:id="contenedorPrincipal" spacing="20" style="-fx-padding: 30;" HBox.hgrow="ALWAYS">
             <HBox spacing="15" style="-fx-alignment: CENTER_LEFT;">
                 <Label text="⭐ Eventos Especiales"
-                       style="-fx-font-size: 24; -fx-font-weight: bold; -fx-text-fill: #1E293B;"/>
+                       style="-fx-font-size: 24; -fx-font-weight: bold; -fx-text-fill: #2C1A0E;"/>
                 <Label fx:id="contadorLabel" text=""
-                       style="-fx-text-fill: #64748B; -fx-font-size: 14; -fx-padding: 4 10; -fx-background-color: #DBEAFE; -fx-background-radius: 12;"/>
+                       style="-fx-text-fill: #7A5C3A; -fx-font-size: 14; -fx-padding: 4 10; -fx-background-color: #FDE8D0; -fx-background-radius: 12;"/>
             </HBox>
 
             <TableView fx:id="tablaEventos" VBox.vgrow="ALWAYS"
-                       style="-fx-background-color: white; -fx-border-color: #E2E8F0; -fx-border-radius: 8; -fx-background-radius: 8;">
+                       style="-fx-background-color: white; -fx-border-color: #F0D9C4; -fx-border-radius: 8; -fx-background-radius: 8;">
                 <placeholder><Label text="No hay eventos especiales"/></placeholder>
                 <columns>
                     <TableColumn fx:id="colTitulo"   text="Título"        prefWidth="200"/>
@@ -60,63 +64,63 @@
 
             <HBox spacing="10">
                 <Button fx:id="btnEliminar" text="🗑️ Eliminar" onAction="#handleEliminar" disable="true"
-                        style="-fx-background-color: #EF4444; -fx-text-fill: white; -fx-padding: 10 20; -fx-background-radius: 6; -fx-cursor: hand; -fx-font-size: 13;"/>
+                        style="-fx-background-color: #E2257D; -fx-text-fill: white; -fx-padding: 10 20; -fx-background-radius: 6; -fx-cursor: hand; -fx-font-size: 13;"/>
             </HBox>
         </VBox>
 
         <!-- Formulario de creación -->
         <VBox spacing="15" style="-fx-padding: 30 30 30 0; -fx-min-width: 320; -fx-max-width: 320;">
             <Label text="Nuevo evento especial"
-                   style="-fx-font-size: 16; -fx-font-weight: bold; -fx-text-fill: #1E293B;"/>
+                   style="-fx-font-size: 16; -fx-font-weight: bold; -fx-text-fill: #2C1A0E;"/>
 
             <VBox spacing="5">
-                <Label text="Título *" style="-fx-text-fill: #64748B; -fx-font-size: 12;"/>
+                <Label text="Título *" style="-fx-text-fill: #7A5C3A; -fx-font-size: 12;"/>
                 <TextField fx:id="tituloField" promptText="Título del evento"
-                           style="-fx-padding: 8; -fx-border-color: #E2E8F0; -fx-border-radius: 6; -fx-background-radius: 6;"/>
+                           style="-fx-padding: 8; -fx-border-color: #F0D9C4; -fx-border-radius: 6; -fx-background-radius: 6;"/>
             </VBox>
 
             <VBox spacing="5">
-                <Label text="Tipo *" style="-fx-text-fill: #64748B; -fx-font-size: 12;"/>
+                <Label text="Tipo *" style="-fx-text-fill: #7A5C3A; -fx-font-size: 12;"/>
                 <ComboBox fx:id="tipoCombo" maxWidth="Infinity"
                           style="-fx-font-size: 13;"/>
             </VBox>
 
             <VBox spacing="5">
-                <Label text="Descripción" style="-fx-text-fill: #64748B; -fx-font-size: 12;"/>
+                <Label text="Descripción" style="-fx-text-fill: #7A5C3A; -fx-font-size: 12;"/>
                 <TextArea fx:id="descripcionArea" promptText="Descripción del evento"
                           prefRowCount="3"
-                          style="-fx-padding: 8; -fx-border-color: #E2E8F0; -fx-border-radius: 6; -fx-background-radius: 6; -fx-font-size: 13;"/>
+                          style="-fx-padding: 8; -fx-border-color: #F0D9C4; -fx-border-radius: 6; -fx-background-radius: 6; -fx-font-size: 13;"/>
             </VBox>
 
             <VBox spacing="5">
-                <Label text="Fecha" style="-fx-text-fill: #64748B; -fx-font-size: 12;"/>
+                <Label text="Fecha" style="-fx-text-fill: #7A5C3A; -fx-font-size: 12;"/>
                 <DatePicker fx:id="fechaPicker" maxWidth="Infinity"
                             style="-fx-font-size: 13;"/>
             </VBox>
 
             <HBox spacing="10">
                 <VBox spacing="5" HBox.hgrow="ALWAYS">
-                    <Label text="Hora" style="-fx-text-fill: #64748B; -fx-font-size: 12;"/>
+                    <Label text="Hora" style="-fx-text-fill: #7A5C3A; -fx-font-size: 12;"/>
                     <TextField fx:id="horaField" promptText="HH:MM"
-                               style="-fx-padding: 8; -fx-border-color: #E2E8F0; -fx-border-radius: 6; -fx-background-radius: 6;"/>
+                               style="-fx-padding: 8; -fx-border-color: #F0D9C4; -fx-border-radius: 6; -fx-background-radius: 6;"/>
                 </VBox>
                 <VBox spacing="5" HBox.hgrow="ALWAYS">
-                    <Label text="Máx. participantes" style="-fx-text-fill: #64748B; -fx-font-size: 12;"/>
+                    <Label text="Máx. participantes" style="-fx-text-fill: #7A5C3A; -fx-font-size: 12;"/>
                     <TextField fx:id="maxParticipantesField" promptText="100"
-                               style="-fx-padding: 8; -fx-border-color: #E2E8F0; -fx-border-radius: 6; -fx-background-radius: 6;"/>
+                               style="-fx-padding: 8; -fx-border-color: #F0D9C4; -fx-border-radius: 6; -fx-background-radius: 6;"/>
                 </VBox>
             </HBox>
 
             <VBox spacing="5">
-                <Label text="Ubicación" style="-fx-text-fill: #64748B; -fx-font-size: 12;"/>
+                <Label text="Ubicación" style="-fx-text-fill: #7A5C3A; -fx-font-size: 12;"/>
                 <TextField fx:id="ubicacionField" promptText="Lugar del evento"
-                           style="-fx-padding: 8; -fx-border-color: #E2E8F0; -fx-border-radius: 6; -fx-background-radius: 6;"/>
+                           style="-fx-padding: 8; -fx-border-color: #F0D9C4; -fx-border-radius: 6; -fx-background-radius: 6;"/>
             </VBox>
 
             <Button text="✅ Crear evento especial" onAction="#handleCrear" maxWidth="Infinity"
-                    style="-fx-background-color: #2563EB; -fx-text-fill: white; -fx-padding: 12; -fx-background-radius: 6; -fx-cursor: hand; -fx-font-size: 13; -fx-font-weight: bold;"/>
+                    style="-fx-background-color: #ED7D2A; -fx-text-fill: white; -fx-padding: 12; -fx-background-radius: 6; -fx-cursor: hand; -fx-font-size: 13; -fx-font-weight: bold;"/>
             <Button text="Limpiar formulario" onAction="#handleLimpiar" maxWidth="Infinity"
-                    style="-fx-background-color: transparent; -fx-text-fill: #64748B; -fx-border-color: #E2E8F0; -fx-border-radius: 6; -fx-padding: 10; -fx-cursor: hand; -fx-font-size: 13;"/>
+                    style="-fx-background-color: transparent; -fx-text-fill: #7A5C3A; -fx-border-color: #F0D9C4; -fx-border-radius: 6; -fx-padding: 10; -fx-cursor: hand; -fx-font-size: 13;"/>
         </VBox>
     </HBox>
 </HBox>

@@ -8,56 +8,59 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.image.Image?>
 <HBox xmlns="http://javafx.com/javafx"
       xmlns:fx="http://javafx.com/fxml"
       fx:controller="com.soprasteria.sportapp.admin.controller.DashboardController"
       stylesheets="@../styles/style.css"
-      style="-fx-background-color: #F8FAFC;">
+      style="-fx-background-color: #FDF6EF;">
 
     <!-- MENÚ LATERAL -->
     <VBox fx:id="menuLateral"
           spacing="0"
-          style="-fx-background-color: #1E293B; -fx-padding: 0;"
+          style="-fx-background-color: #2C1A0E; -fx-padding: 0;"
           prefWidth="250">
 
         <!-- Header menú -->
         <VBox spacing="10"
-              style="-fx-padding: 20; -fx-background-color: #0F172A; -fx-border-color: #334155; -fx-border-width: 0 1 1 0;">
-            <Label text="SportApp Admin"
-                   style="-fx-text-fill: white; -fx-font-size: 16; -fx-font-weight: bold;"/>
+              style="-fx-padding: 20; -fx-background-color: #1A0E06; -fx-border-color: #3D2410; -fx-border-width: 0 1 1 0;">
+            <ImageView fitWidth="140" fitHeight="50" preserveRatio="true">
+                <image><Image url="@../images/logo_normal.png"/></image>
+            </ImageView>
             <Label fx:id="nombreAdminLabel"
                    text="Admin"
-                   style="-fx-text-fill: #94A3B8; -fx-font-size: 12;"/>
+                   style="-fx-text-fill: #E88E51; -fx-font-size: 12;"/>
         </VBox>
 
         <!-- Items del menú -->
         <Button text="📊 Dashboard"
-               style="-fx-background-color: #2563EB; -fx-text-fill: white; -fx-padding: 15; -fx-alignment: CENTER_LEFT; -fx-font-size: 13; -fx-border-width: 0; -fx-cursor: hand;"
+               style="-fx-background-color: #ED7D2A; -fx-text-fill: white; -fx-padding: 15; -fx-alignment: CENTER_LEFT; -fx-font-size: 13; -fx-border-width: 0; -fx-cursor: hand;"
                maxWidth="Infinity"/>
 
         <Button text="👥 Usuarios"
                onAction="#navToUsuarios"
-               style="-fx-background-color: #1E293B; -fx-text-fill: white; -fx-padding: 15; -fx-alignment: CENTER_LEFT; -fx-font-size: 13; -fx-border-width: 0; -fx-border-bottom: 1 solid #334155; -fx-cursor: hand;"
+               style="-fx-background-color: #2C1A0E; -fx-text-fill: white; -fx-padding: 15; -fx-alignment: CENTER_LEFT; -fx-font-size: 13; -fx-border-width: 0; -fx-border-bottom: 1 solid #3D2410; -fx-cursor: hand;"
                maxWidth="Infinity"/>
 
         <Button text="⚽ Eventos"
                onAction="#navToEventos"
-               style="-fx-background-color: #1E293B; -fx-text-fill: white; -fx-padding: 15; -fx-alignment: CENTER_LEFT; -fx-font-size: 13; -fx-border-width: 0; -fx-border-bottom: 1 solid #334155; -fx-cursor: hand;"
+               style="-fx-background-color: #2C1A0E; -fx-text-fill: white; -fx-padding: 15; -fx-alignment: CENTER_LEFT; -fx-font-size: 13; -fx-border-width: 0; -fx-border-bottom: 1 solid #3D2410; -fx-cursor: hand;"
                maxWidth="Infinity"/>
 
         <Button text="⭐ Eventos Especiales"
                onAction="#navToEventosEspeciales"
-               style="-fx-background-color: #1E293B; -fx-text-fill: white; -fx-padding: 15; -fx-alignment: CENTER_LEFT; -fx-font-size: 13; -fx-border-width: 0; -fx-border-bottom: 1 solid #334155; -fx-cursor: hand;"
+               style="-fx-background-color: #2C1A0E; -fx-text-fill: white; -fx-padding: 15; -fx-alignment: CENTER_LEFT; -fx-font-size: 13; -fx-border-width: 0; -fx-border-bottom: 1 solid #3D2410; -fx-cursor: hand;"
                maxWidth="Infinity"/>
 
         <Button text="💬 Soporte"
                onAction="#navToSoporte"
-               style="-fx-background-color: #1E293B; -fx-text-fill: white; -fx-padding: 15; -fx-alignment: CENTER_LEFT; -fx-font-size: 13; -fx-border-width: 0; -fx-border-bottom: 1 solid #334155; -fx-cursor: hand;"
+               style="-fx-background-color: #2C1A0E; -fx-text-fill: white; -fx-padding: 15; -fx-alignment: CENTER_LEFT; -fx-font-size: 13; -fx-border-width: 0; -fx-border-bottom: 1 solid #3D2410; -fx-cursor: hand;"
                maxWidth="Infinity"/>
 
         <Button text="📈 Estadísticas"
                onAction="#navToEstadisticas"
-               style="-fx-background-color: #1E293B; -fx-text-fill: white; -fx-padding: 15; -fx-alignment: CENTER_LEFT; -fx-font-size: 13; -fx-border-width: 0; -fx-border-bottom: 1 solid #334155; -fx-cursor: hand;"
+               style="-fx-background-color: #2C1A0E; -fx-text-fill: white; -fx-padding: 15; -fx-alignment: CENTER_LEFT; -fx-font-size: 13; -fx-border-width: 0; -fx-border-bottom: 1 solid #3D2410; -fx-cursor: hand;"
                maxWidth="Infinity"/>
 
         <!-- Separador -->
@@ -67,7 +70,7 @@
         <Button fx:id="botonCerrarSesion"
                text="🚪 Cerrar sesión"
                onAction="#handleCerrarSesion"
-               style="-fx-background-color: #EF4444; -fx-text-fill: white; -fx-padding: 15; -fx-alignment: CENTER_LEFT; -fx-font-size: 13; -fx-border-width: 0; -fx-cursor: hand;"
+               style="-fx-background-color: #E2257D; -fx-text-fill: white; -fx-padding: 15; -fx-alignment: CENTER_LEFT; -fx-font-size: 13; -fx-border-width: 0; -fx-cursor: hand;"
                maxWidth="Infinity"/>
     </VBox>
 
@@ -79,7 +82,7 @@
 
         <!-- Título -->
         <Label text="Dashboard"
-               style="-fx-font-size: 24; -fx-font-weight: bold; -fx-text-fill: #1E293B;"/>
+               style="-fx-font-size: 24; -fx-font-weight: bold; -fx-text-fill: #2C1A0E;"/>
 
 
         <!-- Cards de estadísticas -->
@@ -90,10 +93,10 @@
                   style="-fx-background-color: white; -fx-padding: 20; -fx-border-radius: 8; -fx-background-radius: 8; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.05), 5, 0, 0, 2);"
                   prefWidth="200">
                 <Label text="Total Usuarios"
-                       style="-fx-text-fill: #64748B; -fx-font-size: 12;"/>
+                       style="-fx-text-fill: #7A5C3A; -fx-font-size: 12;"/>
                 <Label fx:id="totalUsuariosLabel"
                        text="0"
-                       style="-fx-text-fill: #2563EB; -fx-font-size: 28; -fx-font-weight: bold;"/>
+                       style="-fx-text-fill: #ED7D2A; -fx-font-size: 28; -fx-font-weight: bold;"/>
             </VBox>
 
             <!-- Card 2: Total Eventos -->
@@ -101,10 +104,10 @@
                   style="-fx-background-color: white; -fx-padding: 20; -fx-border-radius: 8; -fx-background-radius: 8; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.05), 5, 0, 0, 2);"
                   prefWidth="200">
                 <Label text="Total Eventos"
-                       style="-fx-text-fill: #64748B; -fx-font-size: 12;"/>
+                       style="-fx-text-fill: #7A5C3A; -fx-font-size: 12;"/>
                 <Label fx:id="totalEventosLabel"
                        text="0"
-                       style="-fx-text-fill: #22C55E; -fx-font-size: 28; -fx-font-weight: bold;"/>
+                       style="-fx-text-fill: #6DB467; -fx-font-size: 28; -fx-font-weight: bold;"/>
             </VBox>
 
             <!-- Card 3: Solicitudes Pendientes -->
@@ -112,10 +115,10 @@
                   style="-fx-background-color: white; -fx-padding: 20; -fx-border-radius: 8; -fx-background-radius: 8; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.05), 5, 0, 0, 2);"
                   prefWidth="200">
                 <Label text="Solicitudes Pendientes"
-                       style="-fx-text-fill: #64748B; -fx-font-size: 12;"/>
+                       style="-fx-text-fill: #7A5C3A; -fx-font-size: 12;"/>
                 <Label fx:id="solicitudesPendientesLabel"
                        text="0"
-                       style="-fx-text-fill: #F97316; -fx-font-size: 28; -fx-font-weight: bold;"/>
+                       style="-fx-text-fill: #ED7D2A; -fx-font-size: 28; -fx-font-weight: bold;"/>
             </VBox>
 
             <!-- Card 4: Ingresos -->
@@ -123,10 +126,10 @@
                   style="-fx-background-color: white; -fx-padding: 20; -fx-border-radius: 8; -fx-background-radius: 8; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.05), 5, 0, 0, 2);"
                   prefWidth="200">
                 <Label text="Ingresos"
-                       style="-fx-text-fill: #64748B; -fx-font-size: 12;"/>
+                       style="-fx-text-fill: #7A5C3A; -fx-font-size: 12;"/>
                 <Label fx:id="ingresosLabel"
                        text="€0.00"
-                       style="-fx-text-fill: #A855F7; -fx-font-size: 28; -fx-font-weight: bold;"/>
+                       style="-fx-text-fill: #4475B2; -fx-font-size: 28; -fx-font-weight: bold;"/>
             </VBox>
         </HBox>
 
@@ -136,7 +139,7 @@
               VBox.vgrow="ALWAYS">
 
             <Label text="Eventos por Deporte"
-                   style="-fx-text-fill: #1E293B; -fx-font-size: 14; -fx-font-weight: bold;"/>
+                   style="-fx-text-fill: #2C1A0E; -fx-font-size: 14; -fx-font-weight: bold;"/>
 
             <BarChart fx:id="graficosEventos"
                       VBox.vgrow="ALWAYS">

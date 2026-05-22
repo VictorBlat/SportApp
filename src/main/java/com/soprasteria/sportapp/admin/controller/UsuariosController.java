@@ -17,10 +17,7 @@ import javafx.scene.control.*;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 /**
  * Controlador de la pantalla de gestión de usuarios.
@@ -45,6 +42,8 @@ public class UsuariosController {
     // Mapa usuarioId -> registro de baneo activo
     private final Map<String, UsuarioBaneado> baneosActivos = new HashMap<>();
     private final ObservableList<Usuario> listaUsuarios = FXCollections.observableArrayList();
+    // Copia completa para filtrar localmente sin volver al servidor
+    private final java.util.List<Usuario> todosLosUsuarios = new ArrayList<>();
 
     @FXML
     public void initialize() {
@@ -133,11 +132,13 @@ public class UsuariosController {
 
     private void cargarBaneosYActualizar(List<Usuario> usuarios) {
         // Cargar todos los baneos activos de una vez
-        UsuarioService.obtenerBaneos("").thenAccept(baneos -> {
+        UsuarioService.obtenerTodosBaneos().thenAccept(baneos -> {
             baneosActivos.clear();
             baneos.forEach(b -> baneosActivos.put(b.getUsuarioId(), b));
 
             Platform.runLater(() -> {
+                todosLosUsuarios.clear();
+                todosLosUsuarios.addAll(usuarios);
                 listaUsuarios.setAll(usuarios);
                 contadorLabel.setText(usuarios.size() + " usuarios");
                 tablaUsuarios.refresh();
@@ -145,6 +146,8 @@ public class UsuariosController {
         }).exceptionally(e -> {
             // Si falla la carga de baneos, mostramos usuarios sin estado de baneo
             Platform.runLater(() -> {
+                todosLosUsuarios.clear();
+                todosLosUsuarios.addAll(usuarios);
                 listaUsuarios.setAll(usuarios);
                 contadorLabel.setText(usuarios.size() + " usuarios");
             });
@@ -162,17 +165,15 @@ public class UsuariosController {
             return;
         }
 
-        UsuarioService.buscarUsuarios(termino)
-                .thenAccept(usuarios -> Platform.runLater(() -> {
-                    listaUsuarios.setAll(usuarios);
-                    contadorLabel.setText(usuarios.size() + " resultados");
-                    tablaUsuarios.refresh();
-                }))
-                .exceptionally(e -> {
-                    Platform.runLater(() ->
-                            AlertHelper.mostrarError("Error", "Error en la búsqueda: " + e.getMessage()));
-                    return null;
-                });
+        // Filtrado local sobre la lista ya cargada (evita llamada al servidor)
+        String terminoLower = termino.toLowerCase();
+        java.util.List<Usuario> filtrados = todosLosUsuarios.stream()
+                .filter(u -> u.getNombre() != null &&
+                        u.getNombre().toLowerCase().contains(terminoLower))
+                .collect(java.util.stream.Collectors.toList());
+        listaUsuarios.setAll(filtrados);
+        contadorLabel.setText(filtrados.size() + " resultados");
+        tablaUsuarios.refresh();
     }
 
     @FXML

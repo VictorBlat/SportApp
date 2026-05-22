@@ -21,11 +21,21 @@ public class SoporteService {
         return obj.has(key) && !obj.get(key).isJsonNull() ? obj.get(key).getAsString() : "";
     }
 
+    private static String extraerNombreUsuario(JsonObject obj) {
+        if (obj.has("perfiles") && !obj.get("perfiles").isJsonNull()) {
+            JsonObject perfil = obj.getAsJsonObject("perfiles");
+            if (perfil.has("nombre") && !perfil.get("nombre").isJsonNull()) {
+                return perfil.get("nombre").getAsString();
+            }
+        }
+        return "";
+    }
+
     private static SolicitudSoporte solicitudDesdeJson(JsonObject obj) {
         return new SolicitudSoporte(
                 getString(obj, "id"),
                 getString(obj, "usuario_id"),
-                "",
+                extraerNombreUsuario(obj),
                 getString(obj, "asunto"),
                 getString(obj, "descripcion"),
                 getString(obj, "estado"),
@@ -45,7 +55,9 @@ public class SoporteService {
     public static CompletableFuture<List<SolicitudSoporte>> obtenerSolicitudes(String filtro) {
         return CompletableFuture.supplyAsync(() -> {
             try {
-                String params = filtro != null ? filtro : "select=*";
+                String params = filtro != null
+                        ? "select=*,perfiles(nombre)&" + filtro
+                        : "select=*,perfiles(nombre)";
                 JsonArray resultado = SupabaseService.getFromTable("solicitud_soporte", params).get();
 
                 List<SolicitudSoporte> solicitudes = new ArrayList<>();
@@ -67,7 +79,7 @@ public class SoporteService {
         return CompletableFuture.supplyAsync(() -> {
             try {
                 JsonArray resultado = SupabaseService.getFromTable(
-                        "solicitud_soporte", "id=eq." + solicitudId).get();
+                        "solicitud_soporte", "select=*,perfiles(nombre)&id=eq." + solicitudId).get();
 
                 if (resultado == null || resultado.isEmpty()) {
                     throw new Exception("Solicitud no encontrada");
