@@ -18,12 +18,12 @@ public class MainApp extends Application {
         FXMLLoader loader = new FXMLLoader(
                 getClass().getResource("/fxml/login.fxml")
         );
-        Scene scene = new Scene(loader.load(), 900, 600);
+        Scene scene = new Scene(loader.load(), 1200, 800);
 
         primaryStage.setTitle("SportApp - Panel de Administración");
         primaryStage.setScene(scene);
-        primaryStage.setWidth(900);
-        primaryStage.setHeight(600);
+        primaryStage.setWidth(1200);
+        primaryStage.setHeight(800);
         primaryStage.setOnCloseRequest(e -> {
             // Limpiar sesión al cerrar la app
             SessionManager.getInstance().cerrarSesion();

@@ -15,8 +15,53 @@ import java.util.concurrent.CompletableFuture;
  */
 public class EventoService {
 
+    // ── Helper para extraer el nombre del creador del objeto embebido ──────
+
+    public static String extraerNombreCreador(JsonObject obj) {
+        // Supabase devuelve el join como objeto anidado: { "perfiles": { "nombre": "..." } }
+        if (obj.has("perfiles") && !obj.get("perfiles").isJsonNull()) {
+            JsonObject perfil = obj.getAsJsonObject("perfiles");
+            if (perfil.has("nombre") && !perfil.get("nombre").isJsonNull()) {
+                return perfil.get("nombre").getAsString();
+            }
+        }
+        return "";
+    }
+
+    private static String getString(JsonObject obj, String key) {
+        return obj.has(key) && !obj.get(key).isJsonNull() ? obj.get(key).getAsString() : "";
+    }
+
+    private static int getInt(JsonObject obj, String key) {
+        return obj.has(key) && !obj.get(key).isJsonNull() ? obj.get(key).getAsInt() : 0;
+    }
+
+    private static double getDouble(JsonObject obj, String key) {
+        return obj.has(key) && !obj.get(key).isJsonNull() ? obj.get(key).getAsDouble() : 0.0;
+    }
+
+    private static EventoActividad eventoDesdeJson(JsonObject obj) {
+        return new EventoActividad(
+                getString(obj, "id"),
+                getString(obj, "titulo"),
+                getString(obj, "deporte"),
+                getString(obj, "descripcion"),
+                getString(obj, "ubicacion"),
+                getString(obj, "fecha"),
+                getString(obj, "hora"),
+                getString(obj, "creador_id"),
+                extraerNombreCreador(obj),   // <-- nombre real del creador
+                getInt(obj, "participantes"),
+                getInt(obj, "max_participantes"),
+                getDouble(obj, "latitud"),
+                getDouble(obj, "longitud"),
+                obj.has("emoji") ? getString(obj, "emoji") : "⚽"
+        );
+    }
+
     /**
      * Obtiene la lista de todos los eventos de actividad.
+     * Incluye el nombre del creador mediante join con perfiles.
      *
      * @param filtro Filtro opcional
      * @return CompletableFuture con lista de eventos
@@ -24,31 +69,13 @@ public class EventoService {
     public static CompletableFuture<List<EventoActividad>> obtenerEventos(String filtro) {
         return CompletableFuture.supplyAsync(() -> {
             try {
-                String params = filtro != null ? filtro : "select=*";
+                // select=*,perfiles(nombre) trae el nombre del creador en un objeto anidado
+                String params = filtro != null ? filtro : "select=*,perfiles(nombre)";
                 JsonArray resultado = SupabaseService.getFromTable("evento_actividad", params).get();
 
                 List<EventoActividad> eventos = new ArrayList<>();
                 if (resultado != null) {
-                    resultado.forEach(item -> {
-                        JsonObject obj = item.getAsJsonObject();
-                        EventoActividad evento = new EventoActividad(
-                                obj.get("id").getAsString(),
-                                obj.get("titulo").getAsString(),
-                                obj.get("deporte").getAsString(),
-                                obj.has("descripcion") ? obj.get("descripcion").getAsString() : "",
-                                obj.get("ubicacion").getAsString(),
-                                obj.get("fecha").getAsString(),
-                                obj.get("hora").getAsString(),
-                                obj.get("creador_id").getAsString(),
-                                "",
-                                obj.get("participantes").getAsInt(),
-                                obj.get("max_participantes").getAsInt(),
-                                obj.get("latitud").getAsDouble(),
-                                obj.get("longitud").getAsDouble(),
-                                obj.has("emoji") ? obj.get("emoji").getAsString() : "⚽"
-                        );
-                        eventos.add(evento);
-                    });
+                    resultado.forEach(item -> eventos.add(eventoDesdeJson(item.getAsJsonObject())));
                 }
                 return eventos;
             } catch (Exception e) {
@@ -59,6 +86,7 @@ public class EventoService {
 
     /**
      * Busca eventos por título o deporte.
+     * Incluye el nombre del creador mediante join con perfiles.
      *
      * @param termino Término de búsqueda
      * @return CompletableFuture con lista de eventos filtrados
@@ -66,31 +94,12 @@ public class EventoService {
     public static CompletableFuture<List<EventoActividad>> buscarEventos(String termino) {
         return CompletableFuture.supplyAsync(() -> {
             try {
-                String filtro = "or=(titulo.ilike.%" + termino + "%,deporte.ilike.%" + termino + "%)";
+                String filtro = "select=*,perfiles(nombre)&or=(titulo.ilike.%" + termino + "%,deporte.ilike.%" + termino + "%)";
                 JsonArray resultado = SupabaseService.getFromTable("evento_actividad", filtro).get();
 
                 List<EventoActividad> eventos = new ArrayList<>();
                 if (resultado != null) {
-                    resultado.forEach(item -> {
-                        JsonObject obj = item.getAsJsonObject();
-                        EventoActividad evento = new EventoActividad(
-                                obj.get("id").getAsString(),
-                                obj.get("titulo").getAsString(),
-                                obj.get("deporte").getAsString(),
-                                obj.has("descripcion") ? obj.get("descripcion").getAsString() : "",
-                                obj.get("ubicacion").getAsString(),
-                                obj.get("fecha").getAsString(),
-                                obj.get("hora").getAsString(),
-                                obj.get("creador_id").getAsString(),
-                                "",
-                                obj.get("participantes").getAsInt(),
-                                obj.get("max_participantes").getAsInt(),
-                                obj.get("latitud").getAsDouble(),
-                                obj.get("longitud").getAsDouble(),
-                                obj.has("emoji") ? obj.get("emoji").getAsString() : "⚽"
-                        );
-                        eventos.add(evento);
-                    });
+                    resultado.forEach(item -> eventos.add(eventoDesdeJson(item.getAsJsonObject())));
                 }
                 return eventos;
             } catch (Exception e) {
@@ -110,30 +119,14 @@ public class EventoService {
             try {
                 JsonArray resultado = SupabaseService.getFromTable(
                         "evento_actividad",
-                        "id=eq." + eventoId
+                        "select=*,perfiles(nombre)&id=eq." + eventoId
                 ).get();
 
                 if (resultado == null || resultado.size() == 0) {
                     throw new Exception("Evento no encontrado");
                 }
 
-                JsonObject obj = resultado.get(0).getAsJsonObject();
-                return new EventoActividad(
-                        obj.get("id").getAsString(),
-                        obj.get("titulo").getAsString(),
-                        obj.get("deporte").getAsString(),
-                        obj.has("descripcion") ? obj.get("descripcion").getAsString() : "",
-                        obj.get("ubicacion").getAsString(),
-                        obj.get("fecha").getAsString(),
-                        obj.get("hora").getAsString(),
-                        obj.get("creador_id").getAsString(),
-                        "",
-                        obj.get("participantes").getAsInt(),
-                        obj.get("max_participantes").getAsInt(),
-                        obj.get("latitud").getAsDouble(),
-                        obj.get("longitud").getAsDouble(),
-                        obj.has("emoji") ? obj.get("emoji").getAsString() : "⚽"
-                );
+                return eventoDesdeJson(resultado.get(0).getAsJsonObject());
             } catch (Exception e) {
                 throw new RuntimeException("Error obteniendo evento: " + e.getMessage(), e);
             }
@@ -157,7 +150,7 @@ public class EventoService {
      * @return CompletableFuture con lista de eventos del deporte
      */
     public static CompletableFuture<List<EventoActividad>> filtrarPorDeporte(String deporte) {
-        return obtenerEventos("deporte=eq." + deporte);
+        return obtenerEventos("select=*,perfiles(nombre)&deporte=eq." + deporte);
     }
 
     // ============= EVENTOS ESPECIALES =============
@@ -179,20 +172,20 @@ public class EventoService {
                     resultado.forEach(item -> {
                         JsonObject obj = item.getAsJsonObject();
                         EventoEspecial evento = new EventoEspecial(
-                                obj.get("id").getAsString(),
-                                obj.get("titulo").getAsString(),
-                                obj.get("tipo").getAsString(),
-                                obj.has("descripcion") ? obj.get("descripcion").getAsString() : "",
-                                obj.get("ubicacion").getAsString(),
-                                obj.get("fecha").getAsString(),
-                                obj.get("hora").getAsString(),
-                                obj.get("admin_creador_id").getAsString(),
-                                obj.get("participantes").getAsInt(),
-                                obj.get("max_participantes").getAsInt(),
-                                obj.get("latitud").getAsDouble(),
-                                obj.get("longitud").getAsDouble(),
-                                obj.has("emoji") ? obj.get("emoji").getAsString() : "⭐",
-                                obj.get("created_at").getAsString()
+                                getString(obj, "id"),
+                                getString(obj, "titulo"),
+                                getString(obj, "tipo"),
+                                getString(obj, "descripcion"),
+                                getString(obj, "ubicacion"),
+                                getString(obj, "fecha"),
+                                getString(obj, "hora"),
+                                getString(obj, "admin_creador_id"),
+                                getInt(obj, "participantes"),
+                                getInt(obj, "max_participantes"),
+                                getDouble(obj, "latitud"),
+                                getDouble(obj, "longitud"),
+                                obj.has("emoji") ? getString(obj, "emoji") : "⭐",
+                                getString(obj, "created_at")
                         );
                         eventos.add(evento);
                     });
@@ -277,8 +270,8 @@ public class EventoService {
      */
     private static boolean estipoValido(String tipo) {
         return tipo.equals("benefico") ||
-               tipo.equals("torneo") ||
-               tipo.equals("especial") ||
-               tipo.equals("exhibicion");
+                tipo.equals("torneo") ||
+                tipo.equals("especial") ||
+                tipo.equals("exhibicion");
     }
 }

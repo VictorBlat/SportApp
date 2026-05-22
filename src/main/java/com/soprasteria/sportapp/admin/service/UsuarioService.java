@@ -87,7 +87,7 @@ public class UsuarioService {
     public static CompletableFuture<List<Usuario>> buscarUsuarios(String termino) {
         return CompletableFuture.supplyAsync(() -> {
             try {
-                String filtro = "nombre=ilike.%" + termino + "%";
+                String filtro = "select=*&nombre=ilike.%" + termino + "%";
                 JsonArray resultado = SupabaseService.getFromTable("perfiles", filtro).get();
 
                 List<Usuario> usuarios = new ArrayList<>();

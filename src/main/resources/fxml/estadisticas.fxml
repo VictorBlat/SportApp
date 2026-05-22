@@ -4,34 +4,38 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.image.Image?>
 <HBox xmlns="http://javafx.com/javafx"
       xmlns:fx="http://javafx.com/fxml"
       fx:controller="com.soprasteria.sportapp.admin.controller.EstadisticasController"
       stylesheets="@../styles/style.css"
-      style="-fx-background-color: #F8FAFC;"
+      style="-fx-background-color: #FDF6EF;"
       prefWidth="1100" prefHeight="700">
 
     <!-- MENÚ LATERAL -->
-    <VBox spacing="0" style="-fx-background-color: #1E293B;" prefWidth="250">
-        <VBox spacing="10" style="-fx-padding: 20; -fx-background-color: #0F172A; -fx-border-color: #334155; -fx-border-width: 0 1 1 0;">
-            <Label text="SportApp Admin" style="-fx-text-fill: white; -fx-font-size: 16; -fx-font-weight: bold;"/>
-            <Label fx:id="nombreAdminLabel" text="Admin" style="-fx-text-fill: #94A3B8; -fx-font-size: 12;"/>
+    <VBox spacing="0" style="-fx-background-color: #2C1A0E;" prefWidth="250">
+        <VBox spacing="10" style="-fx-padding: 20; -fx-background-color: #1A0E06; -fx-border-color: #3D2410; -fx-border-width: 0 1 1 0;">
+            <ImageView fitWidth="140" fitHeight="50" preserveRatio="true">
+                <image><Image url="@../images/logo_normal.png"/></image>
+            </ImageView>
+            <Label fx:id="nombreAdminLabel" text="Admin" style="-fx-text-fill: #E88E51; -fx-font-size: 12;"/>
         </VBox>
         <Button text="📊 Dashboard"          onAction="#navToDashboard"
-                style="-fx-background-color: #1E293B; -fx-text-fill: white; -fx-padding: 15; -fx-alignment: CENTER_LEFT; -fx-font-size: 13; -fx-border-width: 0; -fx-cursor: hand;" maxWidth="Infinity"/>
+                style="-fx-background-color: #2C1A0E; -fx-text-fill: white; -fx-padding: 15; -fx-alignment: CENTER_LEFT; -fx-font-size: 13; -fx-border-width: 0; -fx-cursor: hand;" maxWidth="Infinity"/>
         <Button text="👥 Usuarios"           onAction="#navToUsuarios"
-                style="-fx-background-color: #1E293B; -fx-text-fill: white; -fx-padding: 15; -fx-alignment: CENTER_LEFT; -fx-font-size: 13; -fx-border-width: 0; -fx-cursor: hand;" maxWidth="Infinity"/>
+                style="-fx-background-color: #2C1A0E; -fx-text-fill: white; -fx-padding: 15; -fx-alignment: CENTER_LEFT; -fx-font-size: 13; -fx-border-width: 0; -fx-cursor: hand;" maxWidth="Infinity"/>
         <Button text="⚽ Eventos"            onAction="#navToEventos"
-                style="-fx-background-color: #1E293B; -fx-text-fill: white; -fx-padding: 15; -fx-alignment: CENTER_LEFT; -fx-font-size: 13; -fx-border-width: 0; -fx-cursor: hand;" maxWidth="Infinity"/>
+                style="-fx-background-color: #2C1A0E; -fx-text-fill: white; -fx-padding: 15; -fx-alignment: CENTER_LEFT; -fx-font-size: 13; -fx-border-width: 0; -fx-cursor: hand;" maxWidth="Infinity"/>
         <Button text="⭐ Eventos Especiales" onAction="#navToEventosEspeciales"
-                style="-fx-background-color: #1E293B; -fx-text-fill: white; -fx-padding: 15; -fx-alignment: CENTER_LEFT; -fx-font-size: 13; -fx-border-width: 0; -fx-cursor: hand;" maxWidth="Infinity"/>
+                style="-fx-background-color: #2C1A0E; -fx-text-fill: white; -fx-padding: 15; -fx-alignment: CENTER_LEFT; -fx-font-size: 13; -fx-border-width: 0; -fx-cursor: hand;" maxWidth="Infinity"/>
         <Button text="💬 Soporte"            onAction="#navToSoporte"
-                style="-fx-background-color: #1E293B; -fx-text-fill: white; -fx-padding: 15; -fx-alignment: CENTER_LEFT; -fx-font-size: 13; -fx-border-width: 0; -fx-cursor: hand;" maxWidth="Infinity"/>
+                style="-fx-background-color: #2C1A0E; -fx-text-fill: white; -fx-padding: 15; -fx-alignment: CENTER_LEFT; -fx-font-size: 13; -fx-border-width: 0; -fx-cursor: hand;" maxWidth="Infinity"/>
         <Button text="📈 Estadísticas"
-                style="-fx-background-color: #2563EB; -fx-text-fill: white; -fx-padding: 15; -fx-alignment: CENTER_LEFT; -fx-font-size: 13; -fx-border-width: 0; -fx-cursor: hand;" maxWidth="Infinity"/>
+                style="-fx-background-color: #ED7D2A; -fx-text-fill: white; -fx-padding: 15; -fx-alignment: CENTER_LEFT; -fx-font-size: 13; -fx-border-width: 0; -fx-cursor: hand;" maxWidth="Infinity"/>
         <VBox VBox.vgrow="ALWAYS"/>
         <Button text="🚪 Cerrar sesión" onAction="#handleCerrarSesion"
-                style="-fx-background-color: #EF4444; -fx-text-fill: white; -fx-padding: 15; -fx-alignment: CENTER_LEFT; -fx-font-size: 13; -fx-border-width: 0; -fx-cursor: hand;" maxWidth="Infinity"/>
+                style="-fx-background-color: #E2257D; -fx-text-fill: white; -fx-padding: 15; -fx-alignment: CENTER_LEFT; -fx-font-size: 13; -fx-border-width: 0; -fx-cursor: hand;" maxWidth="Infinity"/>
     </VBox>
 
     <!-- CONTENIDO -->
@@ -39,34 +43,34 @@
         <VBox fx:id="contenedorPrincipal" spacing="25" style="-fx-padding: 30;">
 
             <Label text="📈 Estadísticas"
-                   style="-fx-font-size: 24; -fx-font-weight: bold; -fx-text-fill: #1E293B;"/>
+                   style="-fx-font-size: 24; -fx-font-weight: bold; -fx-text-fill: #2C1A0E;"/>
 
             <!-- Cards de métricas -->
             <HBox spacing="15">
                 <VBox spacing="8" style="-fx-background-color: white; -fx-padding: 20; -fx-background-radius: 8; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.05), 5, 0, 0, 2);" HBox.hgrow="ALWAYS">
-                    <Label text="👥 Total Usuarios" style="-fx-text-fill: #64748B; -fx-font-size: 12;"/>
+                    <Label text="👥 Total Usuarios" style="-fx-text-fill: #7A5C3A; -fx-font-size: 12;"/>
                     <Label fx:id="cardUsuarios" text="—"
-                           style="-fx-text-fill: #2563EB; -fx-font-size: 28; -fx-font-weight: bold;"/>
+                           style="-fx-text-fill: #ED7D2A; -fx-font-size: 28; -fx-font-weight: bold;"/>
                 </VBox>
                 <VBox spacing="8" style="-fx-background-color: white; -fx-padding: 20; -fx-background-radius: 8; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.05), 5, 0, 0, 2);" HBox.hgrow="ALWAYS">
-                    <Label text="⚽ Total Eventos" style="-fx-text-fill: #64748B; -fx-font-size: 12;"/>
+                    <Label text="⚽ Total Eventos" style="-fx-text-fill: #7A5C3A; -fx-font-size: 12;"/>
                     <Label fx:id="cardEventos" text="—"
-                           style="-fx-text-fill: #22C55E; -fx-font-size: 28; -fx-font-weight: bold;"/>
+                           style="-fx-text-fill: #6DB467; -fx-font-size: 28; -fx-font-weight: bold;"/>
                 </VBox>
                 <VBox spacing="8" style="-fx-background-color: white; -fx-padding: 20; -fx-background-radius: 8; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.05), 5, 0, 0, 2);" HBox.hgrow="ALWAYS">
-                    <Label text="📅 Eventos Activos" style="-fx-text-fill: #64748B; -fx-font-size: 12;"/>
+                    <Label text="📅 Eventos Activos" style="-fx-text-fill: #7A5C3A; -fx-font-size: 12;"/>
                     <Label fx:id="cardEventosActivos" text="—"
-                           style="-fx-text-fill: #F97316; -fx-font-size: 28; -fx-font-weight: bold;"/>
+                           style="-fx-text-fill: #ED7D2A; -fx-font-size: 28; -fx-font-weight: bold;"/>
                 </VBox>
                 <VBox spacing="8" style="-fx-background-color: white; -fx-padding: 20; -fx-background-radius: 8; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.05), 5, 0, 0, 2);" HBox.hgrow="ALWAYS">
-                    <Label text="💬 Total Mensajes" style="-fx-text-fill: #64748B; -fx-font-size: 12;"/>
+                    <Label text="💬 Total Mensajes" style="-fx-text-fill: #7A5C3A; -fx-font-size: 12;"/>
                     <Label fx:id="cardMensajes" text="—"
-                           style="-fx-text-fill: #A855F7; -fx-font-size: 28; -fx-font-weight: bold;"/>
+                           style="-fx-text-fill: #4475B2; -fx-font-size: 28; -fx-font-weight: bold;"/>
                 </VBox>
                 <VBox spacing="8" style="-fx-background-color: white; -fx-padding: 20; -fx-background-radius: 8; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.05), 5, 0, 0, 2);" HBox.hgrow="ALWAYS">
-                    <Label text="💰 Ingresos" style="-fx-text-fill: #64748B; -fx-font-size: 12;"/>
+                    <Label text="💰 Ingresos" style="-fx-text-fill: #7A5C3A; -fx-font-size: 12;"/>
                     <Label fx:id="cardIngresos" text="—"
-                           style="-fx-text-fill: #22C55E; -fx-font-size: 28; -fx-font-weight: bold;"/>
+                           style="-fx-text-fill: #6DB467; -fx-font-size: 28; -fx-font-weight: bold;"/>
                 </VBox>
             </HBox>
 
@@ -74,7 +78,7 @@
             <HBox spacing="20">
                 <!-- BarChart eventos por deporte -->
                 <VBox spacing="10" style="-fx-background-color: white; -fx-padding: 20; -fx-background-radius: 8; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.05), 5, 0, 0, 2);" HBox.hgrow="ALWAYS">
-                    <Label text="Eventos por deporte" style="-fx-font-size: 14; -fx-font-weight: bold; -fx-text-fill: #1E293B;"/>
+                    <Label text="Eventos por deporte" style="-fx-font-size: 14; -fx-font-weight: bold; -fx-text-fill: #2C1A0E;"/>
                     <BarChart fx:id="barEventosDeporte" prefHeight="260" animated="false">
                         <xAxis><CategoryAxis label="Deporte"/></xAxis>
                         <yAxis><NumberAxis label="Eventos"/></yAxis>
@@ -83,14 +87,14 @@
 
                 <!-- PieChart distribución deportes -->
                 <VBox spacing="10" style="-fx-background-color: white; -fx-padding: 20; -fx-background-radius: 8; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.05), 5, 0, 0, 2);" HBox.hgrow="ALWAYS">
-                    <Label text="Deportes favoritos de usuarios" style="-fx-font-size: 14; -fx-font-weight: bold; -fx-text-fill: #1E293B;"/>
+                    <Label text="Deportes favoritos de usuarios" style="-fx-font-size: 14; -fx-font-weight: bold; -fx-text-fill: #2C1A0E;"/>
                     <PieChart fx:id="pieDeportes" prefHeight="260" animated="false" labelsVisible="true"/>
                 </VBox>
             </HBox>
 
             <!-- LineChart usuarios por mes -->
             <VBox spacing="10" style="-fx-background-color: white; -fx-padding: 20; -fx-background-radius: 8; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.05), 5, 0, 0, 2);">
-                <Label text="Usuarios registrados por mes" style="-fx-font-size: 14; -fx-font-weight: bold; -fx-text-fill: #1E293B;"/>
+                <Label text="Usuarios registrados por mes" style="-fx-font-size: 14; -fx-font-weight: bold; -fx-text-fill: #2C1A0E;"/>
                 <LineChart fx:id="lineUsuariosMes" prefHeight="220" animated="false">
                     <xAxis><CategoryAxis label="Mes"/></xAxis>
                     <yAxis><NumberAxis label="Usuarios"/></yAxis>

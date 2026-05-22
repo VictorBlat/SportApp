@@ -71,7 +71,6 @@ public class SoporteController {
             }
             return new SimpleStringProperty(nombre);
         });
-
         colAsunto.setCellValueFactory(c ->
                 new SimpleStringProperty(c.getValue().getAsunto()));
 
