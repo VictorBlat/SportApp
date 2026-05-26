@@ -147,16 +147,14 @@ public class EventosController {
             return;
         }
 
-        EventoService.buscarEventos(termino)
-                .thenAccept(eventos -> Platform.runLater(() -> {
-                    listaEventos.setAll(eventos);
-                    contadorLabel.setText(eventos.size() + " resultados");
-                }))
-                .exceptionally(e -> {
-                    Platform.runLater(() ->
-                            AlertHelper.mostrarError("Error", "Error en la búsqueda: " + e.getMessage()));
-                    return null;
-                });
+        // Filtrado local sobre la lista ya cargada (evita llamadas al servidor)
+        String terminoLower = termino.toLowerCase();
+        List<EventoActividad> filtrados = todosLosEventos.stream()
+                .filter(e -> (e.getTitulo()  != null && e.getTitulo().toLowerCase().contains(terminoLower))
+                        || (e.getDeporte() != null && e.getDeporte().toLowerCase().contains(terminoLower)))
+                .collect(Collectors.toList());
+        listaEventos.setAll(filtrados);
+        contadorLabel.setText(filtrados.size() + " resultados");
     }
 
     @FXML

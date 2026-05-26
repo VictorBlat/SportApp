@@ -25,14 +25,12 @@ public class EstadisticasController {
     @FXML private Label nombreAdminLabel;
     @FXML private VBox contenedorPrincipal;
 
-    // Cards
     @FXML private Label cardUsuarios;
     @FXML private Label cardEventos;
     @FXML private Label cardEventosActivos;
     @FXML private Label cardMensajes;
     @FXML private Label cardIngresos;
 
-    // Gráficos
     @FXML private BarChart<String, Number>  barEventosDeporte;
     @FXML private PieChart                  pieDeportes;
     @FXML private LineChart<String, Number> lineUsuariosMes;
@@ -51,19 +49,16 @@ public class EstadisticasController {
         cargarDeportesUsuarios();
     }
 
-    // ── Cards y gráficos ───────────────────────────────────────────────────
-
     private void cargarUsuarios() {
         UsuarioService.obtenerUsuarios(null)
                 .thenAccept(usuarios -> Platform.runLater(() -> {
                     cardUsuarios.setText(String.valueOf(usuarios.size()));
 
-                    // LineChart usuarios por mes
                     Map<String, Integer> porMes = new TreeMap<>();
                     usuarios.forEach(u -> {
                         String fecha = u.getCreatedAt();
                         if (fecha != null && fecha.length() >= 7) {
-                            String mes = fecha.substring(0, 7); // YYYY-MM
+                            String mes = fecha.substring(0, 7);
                             porMes.merge(mes, 1, Integer::sum);
                         }
                     });
@@ -86,14 +81,12 @@ public class EstadisticasController {
                 .thenAccept(eventos -> Platform.runLater(() -> {
                     cardEventos.setText(String.valueOf(eventos.size()));
 
-                    // Eventos activos (fecha >= hoy)
                     String hoy = LocalDate.now().toString();
                     long activos = eventos.stream()
                             .filter(e -> e.getFecha() != null && e.getFecha().compareTo(hoy) >= 0)
                             .count();
                     cardEventosActivos.setText(String.valueOf(activos));
 
-                    // BarChart por deporte
                     Map<String, Integer> porDeporte = new HashMap<>();
                     eventos.forEach(e -> porDeporte.merge(e.getDeporte(), 1, Integer::sum));
 
@@ -117,9 +110,16 @@ public class EstadisticasController {
     }
 
     private void cargarMensajes() {
-        SupabaseService.getFromTable("mensaje", "select=id")
-                .thenAccept(result -> Platform.runLater(() ->
-                        cardMensajes.setText(result != null ? String.valueOf(result.size()) : "0")))
+        // Usa service role key para saltar RLS y contar todos los mensajes
+        SupabaseService.countFromTableAdmin("mensaje")
+                .thenAccept(result -> Platform.runLater(() -> {
+                    if (result != null && result.size() > 0) {
+                        int count = result.get(0).getAsJsonObject().get("count").getAsInt();
+                        cardMensajes.setText(String.valueOf(count));
+                    } else {
+                        cardMensajes.setText("0");
+                    }
+                }))
                 .exceptionally(e -> {
                     Platform.runLater(() -> cardMensajes.setText("—"));
                     return null;
@@ -127,7 +127,7 @@ public class EstadisticasController {
     }
 
     private void cargarIngresos() {
-        SupabaseService.getFromTable("transaccion_premium", "select=monto")
+        SupabaseService.getFromTableAdmin("transaccion_premium", "select=monto")
                 .thenAccept(result -> Platform.runLater(() -> {
                     if (result == null || result.isEmpty()) {
                         cardIngresos.setText("€0.00");
@@ -149,7 +149,7 @@ public class EstadisticasController {
     }
 
     private void cargarDeportesUsuarios() {
-        SupabaseService.getFromTable("perfil_deportivo", "select=deporte")
+        SupabaseService.getFromTableAdmin("perfil_deportivo", "select=deporte")
                 .thenAccept(result -> Platform.runLater(() -> {
                     if (result == null || result.isEmpty()) return;
 
@@ -168,13 +168,13 @@ public class EstadisticasController {
                 .exceptionally(e -> null);
     }
 
-    // ── Navegación ─────────────────────────────────────────────────────────
+    // ── Navegación ──────────────────────────────────────────────────────────
 
-    @FXML private void navToDashboard()         { navToScene("/fxml/dashboard.fxml",          "Dashboard"); }
-    @FXML private void navToUsuarios()          { navToScene("/fxml/usuarios.fxml",            "Gestión de Usuarios"); }
-    @FXML private void navToEventos()           { navToScene("/fxml/eventos.fxml",             "Gestión de Eventos"); }
-    @FXML private void navToEventosEspeciales() { navToScene("/fxml/eventos_especiales.fxml",  "Eventos Especiales"); }
-    @FXML private void navToSoporte()           { navToScene("/fxml/soporte.fxml",             "Soporte"); }
+    @FXML private void navToDashboard()         { navToScene("/fxml/dashboard.fxml",         "Dashboard"); }
+    @FXML private void navToUsuarios()          { navToScene("/fxml/usuarios.fxml",           "Gestión de Usuarios"); }
+    @FXML private void navToEventos()           { navToScene("/fxml/eventos.fxml",            "Gestión de Eventos"); }
+    @FXML private void navToEventosEspeciales() { navToScene("/fxml/eventos_especiales.fxml", "Eventos Especiales"); }
+    @FXML private void navToSoporte()           { navToScene("/fxml/soporte.fxml",            "Soporte"); }
 
     private void navToScene(String fxmlPath, String title) {
         try {
