@@ -23,7 +23,6 @@ public class AuthService {
      */
     public static CompletableFuture<Administrador> login(String email, String password) {
         return CompletableFuture.supplyAsync(() -> {
-            // Validar que email y contraseña no estén vacíos
             if (email == null || email.trim().isEmpty()) {
                 throw new IllegalArgumentException("El email no puede estar vacío");
             }
@@ -32,7 +31,6 @@ public class AuthService {
             }
 
             try {
-                // Obtener el administrador de la tabla por email
                 JsonArray resultado = SupabaseService.getFromTable(
                         "administradores",
                         "email=eq." + email
@@ -45,7 +43,6 @@ public class AuthService {
                 JsonObject adminJson = resultado.get(0).getAsJsonObject();
                 String passwordHash = adminJson.get("password_hash").getAsString();
 
-                // Verificar contraseña con BCrypt
                 BCrypt.Result resultado_bcrypt = BCrypt.verifyer().verify(
                         password.toCharArray(),
                         passwordHash
@@ -55,7 +52,6 @@ public class AuthService {
                     throw new Exception("Contraseña incorrecta");
                 }
 
-                // Crear objeto Administrador
                 Administrador admin = new Administrador(
                         adminJson.get("id").getAsString(),
                         adminJson.get("email").getAsString(),
@@ -63,7 +59,6 @@ public class AuthService {
                         adminJson.get("created_at").getAsString()
                 );
 
-                // Guardar en sesión
                 SessionManager.getInstance().iniciarSesion(admin);
 
                 return admin;

@@ -29,7 +29,6 @@ public class SoporteController {
     @FXML private TableColumn<SolicitudSoporte, String> colEstado;
     @FXML private TableColumn<SolicitudSoporte, String> colFecha;
 
-    // Panel detalle
     @FXML private Label detalleUsuario;
     @FXML private Label detalleAsunto;
     @FXML private Label detalleEstado;
@@ -47,8 +46,6 @@ public class SoporteController {
         configurarTabla();
         cargarSolicitudes(null);
     }
-
-    // ── Configuración ──────────────────────────────────────────────────────
 
     private void configurarFiltro() {
         filtroEstado.setItems(FXCollections.observableArrayList(
@@ -85,7 +82,6 @@ public class SoporteController {
             return new SimpleStringProperty(etiqueta);
         });
 
-        // Color por estado
         tablaSolicitudes.setRowFactory(tv -> new TableRow<>() {
             @Override
             protected void updateItem(SolicitudSoporte s, boolean empty) {
@@ -111,16 +107,13 @@ public class SoporteController {
 
         tablaSolicitudes.setItems(listaSolicitudes);
 
-        // Al seleccionar, mostrar detalle
         tablaSolicitudes.getSelectionModel().selectedItemProperty().addListener((obs, old, sel) -> {
             if (sel != null) mostrarDetalle(sel);
             else limpiarDetalle();
         });
     }
 
-    // ── Carga ──────────────────────────────────────────────────────────────
-
-    private void cargarSolicitudes(String filtro) {
+ private void cargarSolicitudes(String filtro) {
         SoporteService.obtenerSolicitudes(filtro)
                 .thenAccept(solicitudes -> Platform.runLater(() -> {
                     listaSolicitudes.setAll(solicitudes);
@@ -137,8 +130,6 @@ public class SoporteController {
                         pendientesLabel.setText(count + " pendientes")))
                 .exceptionally(e -> null);
     }
-
-    // ── Panel detalle ──────────────────────────────────────────────────────
 
     private void mostrarDetalle(SolicitudSoporte s) {
         String nombre = s.getUsuarioNombre();
@@ -166,8 +157,6 @@ public class SoporteController {
         btnEnRevision.setDisable(true);
         btnResuelto.setDisable(true);
     }
-
-    // ── Acciones ───────────────────────────────────────────────────────────
 
     @FXML
     private void handleActualizar() {
@@ -209,8 +198,6 @@ public class SoporteController {
                     return null;
                 });
     }
-
-    // ── Navegación ─────────────────────────────────────────────────────────
 
     @FXML private void navToDashboard()         { navToScene("/fxml/dashboard.fxml",          "Dashboard"); }
     @FXML private void navToUsuarios()          { navToScene("/fxml/usuarios.fxml",            "Gestión de Usuarios"); }

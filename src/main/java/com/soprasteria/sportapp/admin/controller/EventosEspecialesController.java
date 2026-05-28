@@ -33,7 +33,6 @@ public class EventosEspecialesController {
     @FXML private TableColumn<EventoEspecial, String> colPlazas;
     @FXML private Button btnEliminar;
 
-    // Formulario
     @FXML private TextField tituloField;
     @FXML private ComboBox<String> tipoCombo;
     @FXML private TextArea descripcionArea;
@@ -51,8 +50,6 @@ public class EventosEspecialesController {
         configurarFormulario();
         cargarEventos();
     }
-
-    // ── Tabla ──────────────────────────────────────────────────────────────
 
     private void configurarTabla() {
         colTitulo.setCellValueFactory(c ->
@@ -96,7 +93,6 @@ public class EventosEspecialesController {
         fechaPicker.setValue(LocalDate.now().plusDays(7));
     }
 
-    // ── Carga ──────────────────────────────────────────────────────────────
 
     private void cargarEventos() {
         EventoService.obtenerEventosEspeciales(null)
@@ -111,7 +107,6 @@ public class EventosEspecialesController {
                 });
     }
 
-    // ── Acciones ───────────────────────────────────────────────────────────
 
     @FXML
     private void handleCrear() {
@@ -196,7 +191,6 @@ public class EventosEspecialesController {
         tipoCombo.getSelectionModel().selectFirst();
     }
 
-    // ── Navegación ─────────────────────────────────────────────────────────
 
     @FXML private void navToDashboard()  { navToScene("/fxml/dashboard.fxml",         "Dashboard"); }
     @FXML private void navToUsuarios()   { navToScene("/fxml/usuarios.fxml",           "Gestión de Usuarios"); }

@@ -9,18 +9,11 @@ import okhttp3.*;
 import java.io.IOException;
 import java.util.concurrent.CompletableFuture;
 
-/**
- * Servicio central que maneja todas las llamadas HTTP a Supabase.
- * Los demás servicios usan esta clase para interactuar con el backend.
- */
 public class SupabaseService {
 
     private static final OkHttpClient client = new OkHttpClient();
     private static final Gson gson = new Gson();
 
-    /**
-     * Construye los headers base para todas las llamadas a Supabase.
-     */
     private static Headers.Builder getDefaultHeaders() {
         return new Headers.Builder()
                 .add("Authorization", "Bearer " + SupabaseConfig.ANON_KEY)
@@ -28,14 +21,57 @@ public class SupabaseService {
                 .add("Content-Type", "application/json");
     }
 
-    /**
-     * GET — obtiene registros de una tabla.
-     *
-     * @param table  Nombre de la tabla
-     * @param params Parámetros de filtrado (ej: "select=*" o "id=eq.123")
-     * @return CompletableFuture con el JsonArray de resultados
-     */
+    private static Headers.Builder getAdminHeaders() {
+        return new Headers.Builder()
+                .add("Authorization", "Bearer " + SupabaseConfig.SERVICE_ROLE_KEY)
+                .add("apikey", SupabaseConfig.SERVICE_ROLE_KEY)
+                .add("Content-Type", "application/json");
+    }
+
     public static CompletableFuture<JsonArray> getFromTable(String table, String params) {
+        return getFromTableWithHeaders(table, params, getDefaultHeaders());
+    }
+
+    public static CompletableFuture<JsonArray> getFromTableAdmin(String table, String params) {
+        return getFromTableWithHeaders(table, params, getAdminHeaders());
+    }
+
+    public static CompletableFuture<JsonArray> countFromTableAdmin(String table) {
+        return CompletableFuture.supplyAsync(() -> {
+            try {
+                String url = SupabaseConfig.REST_URL + "/" + table + "?select=id";
+
+                Request request = new Request.Builder()
+                        .url(url)
+                        .headers(getAdminHeaders()
+                                .add("Prefer", "count=exact")
+                                .add("Range", "0-0")
+                                .build())
+                        .get()
+                        .build();
+
+                try (Response response = client.newCall(request).execute()) {
+                    String contentRange = response.header("Content-Range", "0-0/0");
+                    int total = 0;
+                    if (contentRange != null && contentRange.contains("/")) {
+                        try {
+                            total = Integer.parseInt(contentRange.split("/")[1].trim());
+                        } catch (NumberFormatException ignored) {}
+                    }
+                    JsonArray arr = new JsonArray();
+                    JsonObject obj = new JsonObject();
+                    obj.addProperty("count", total);
+                    arr.add(obj);
+                    return arr;
+                }
+            } catch (Exception e) {
+                throw new RuntimeException("Error contando " + table + ": " + e.getMessage(), e);
+            }
+        });
+    }
+
+    private static CompletableFuture<JsonArray> getFromTableWithHeaders(
+            String table, String params, Headers.Builder headers) {
         return CompletableFuture.supplyAsync(() -> {
             try {
                 String url = SupabaseConfig.REST_URL + "/" + table;
@@ -45,7 +81,7 @@ public class SupabaseService {
 
                 Request request = new Request.Builder()
                         .url(url)
-                        .headers(getDefaultHeaders().build())
+                        .headers(headers.build())
                         .get()
                         .build();
 
@@ -53,7 +89,6 @@ public class SupabaseService {
                     if (!response.isSuccessful()) {
                         throw new IOException("Error HTTP: " + response.code() + " - " + response.message());
                     }
-
                     String body = response.body() != null ? response.body().string() : "[]";
                     return gson.fromJson(body, JsonArray.class);
                 }
@@ -63,43 +98,25 @@ public class SupabaseService {
         });
     }
 
-    /**
-     * POST — inserta un registro en una tabla.
-     * Usa Prefer: return=representation para que Supabase devuelva el objeto insertado.
-     *
-     * @param table Nombre de la tabla
-     * @param data  JsonObject con los datos a insertar
-     * @return CompletableFuture con el JsonObject insertado
-     */
-    public static CompletableFuture<JsonObject> postToTable(String table, JsonObject data) {
+    public static CompletableFuture<JsonObject> postToTable(String table, JsonObject body) {
         return CompletableFuture.supplyAsync(() -> {
             try {
-                String url = SupabaseConfig.REST_URL + "/" + table;
-
-                RequestBody body = RequestBody.create(
-                        data.toString(),
-                        MediaType.parse("application/json")
-                );
-
                 Request request = new Request.Builder()
-                        .url(url)
+                        .url(SupabaseConfig.REST_URL + "/" + table)
                         .headers(getDefaultHeaders()
                                 .add("Prefer", "return=representation")
                                 .build())
-                        .post(body)
+                        .post(RequestBody.create(gson.toJson(body),
+                                MediaType.parse("application/json")))
                         .build();
 
                 try (Response response = client.newCall(request).execute()) {
                     if (!response.isSuccessful()) {
-                        throw new IOException("Error HTTP: " + response.code() + " - " + response.message());
+                        throw new IOException("Error HTTP: " + response.code());
                     }
-
-                    String bodyResponse = response.body() != null ? response.body().string() : "[]";
-                    if (bodyResponse.isBlank() || bodyResponse.equals("null")) return data;
-
-                    JsonArray resultArray = gson.fromJson(bodyResponse, JsonArray.class);
-                    if (resultArray == null || resultArray.isEmpty()) return data;
-                    return resultArray.get(0).getAsJsonObject();
+                    String responseBody = response.body() != null ? response.body().string() : "[]";
+                    JsonArray arr = gson.fromJson(responseBody, JsonArray.class);
+                    return arr.size() > 0 ? arr.get(0).getAsJsonObject() : new JsonObject();
                 }
             } catch (Exception e) {
                 throw new RuntimeException("Error en POST " + table + ": " + e.getMessage(), e);
@@ -107,42 +124,24 @@ public class SupabaseService {
         });
     }
 
-    /**
-     * PATCH — actualiza registros de una tabla.
-     *
-     * @param table  Nombre de la tabla
-     * @param filter Filtro (ej: "id=eq.123")
-     * @param data   JsonObject con los datos a actualizar
-     * @return CompletableFuture con el JsonArray resultado
-     */
-    public static CompletableFuture<JsonArray> patchTable(String table, String filter, JsonObject data) {
+    public static CompletableFuture<Void> patchTable(String table, String filter, JsonObject body) {
         return CompletableFuture.supplyAsync(() -> {
             try {
-                String url = SupabaseConfig.REST_URL + "/" + table + "?" + filter;
-
-                RequestBody body = RequestBody.create(
-                        data.toString(),
-                        MediaType.parse("application/json")
-                );
+                String url = SupabaseConfig.REST_URL + "/" + table;
+                if (filter != null && !filter.isBlank()) url += "?" + filter;
 
                 Request request = new Request.Builder()
                         .url(url)
-                        .headers(getDefaultHeaders()
-                                .add("Prefer", "return=representation")
-                                .build())
-                        .patch(body)
+                        .headers(getDefaultHeaders().build())
+                        .patch(RequestBody.create(gson.toJson(body),
+                                MediaType.parse("application/json")))
                         .build();
 
                 try (Response response = client.newCall(request).execute()) {
                     if (!response.isSuccessful()) {
-                        throw new IOException("Error HTTP: " + response.code() + " - " + response.message());
+                        throw new IOException("Error HTTP: " + response.code());
                     }
-
-                    String bodyResponse = response.body() != null ? response.body().string() : "[]";
-                    if (bodyResponse.isBlank() || bodyResponse.equals("null")) return new JsonArray();
-
-                    JsonArray result = gson.fromJson(bodyResponse, JsonArray.class);
-                    return result != null ? result : new JsonArray();
+                    return null;
                 }
             } catch (Exception e) {
                 throw new RuntimeException("Error en PATCH " + table + ": " + e.getMessage(), e);
@@ -150,17 +149,11 @@ public class SupabaseService {
         });
     }
 
-    /**
-     * DELETE — elimina registros de una tabla.
-     *
-     * @param table  Nombre de la tabla
-     * @param filter Filtro (ej: "id=eq.123")
-     * @return CompletableFuture vacío
-     */
     public static CompletableFuture<Void> deleteFromTable(String table, String filter) {
-        return CompletableFuture.runAsync(() -> {
+        return CompletableFuture.supplyAsync(() -> {
             try {
-                String url = SupabaseConfig.REST_URL + "/" + table + "?" + filter;
+                String url = SupabaseConfig.REST_URL + "/" + table;
+                if (filter != null && !filter.isBlank()) url += "?" + filter;
 
                 Request request = new Request.Builder()
                         .url(url)
@@ -170,19 +163,13 @@ public class SupabaseService {
 
                 try (Response response = client.newCall(request).execute()) {
                     if (!response.isSuccessful()) {
-                        throw new IOException("Error HTTP: " + response.code() + " - " + response.message());
+                        throw new IOException("Error HTTP: " + response.code());
                     }
+                    return null;
                 }
             } catch (Exception e) {
                 throw new RuntimeException("Error en DELETE " + table + ": " + e.getMessage(), e);
             }
         });
-    }
-
-    /**
-     * Gson compartido para parsear JSON.
-     */
-    public static Gson getGson() {
-        return gson;
     }
 }

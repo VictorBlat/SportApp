@@ -10,11 +10,10 @@ public class Administrador {
     private String nombre;
     private String createdAt;
 
-    // Constructor vacío
+
     public Administrador() {
     }
 
-    // Constructor con parámetros
     public Administrador(String id, String email, String nombre, String createdAt) {
         this.id = id;
         this.email = email;
@@ -22,7 +21,7 @@ public class Administrador {
         this.createdAt = createdAt;
     }
 
-    // Getters y Setters
+
     public String getId() {
         return id;
     }

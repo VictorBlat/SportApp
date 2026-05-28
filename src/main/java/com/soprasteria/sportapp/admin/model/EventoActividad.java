@@ -20,11 +20,9 @@ public class EventoActividad {
     private double longitud;
     private String emoji;
 
-    // Constructor vacío
     public EventoActividad() {
     }
 
-    // Constructor con parámetros
     public EventoActividad(String id, String titulo, String deporte, String descripcion,
                           String ubicacion, String fecha, String hora, String creadorId,
                           String creadorNombre, int participantes, int maxParticipantes,
@@ -45,7 +43,7 @@ public class EventoActividad {
         this.emoji = emoji;
     }
 
-    // Getters y Setters
+
     public String getId() {
         return id;
     }

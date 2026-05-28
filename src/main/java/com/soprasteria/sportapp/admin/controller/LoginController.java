@@ -29,7 +29,6 @@ public class LoginController {
 
     @FXML
     public void initialize() {
-        // Permitir login con Enter
         passwordField.setOnKeyPressed(event -> {
             if (event.getCode() == KeyCode.ENTER) {
                 handleLogin();
@@ -50,11 +49,9 @@ public class LoginController {
             return;
         }
 
-        // Deshabilitar botón durante el login
         botonAcceder.setDisable(true);
         botonAcceder.setText("Accediendo...");
 
-        // Realizar login en hilo separado
         AuthService.login(email, password)
                 .thenAccept(admin -> Platform.runLater(() -> {
                     AlertHelper.mostrarInfo("Login exitoso", "Bienvenido " + admin.getNombre());

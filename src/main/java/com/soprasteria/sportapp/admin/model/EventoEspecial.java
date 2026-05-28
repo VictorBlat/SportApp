@@ -7,7 +7,7 @@ public class EventoEspecial {
 
     private String id;
     private String titulo;
-    private String tipo; // 'benefico', 'torneo', 'especial', 'exhibicion'
+    private String tipo;
     private String descripcion;
     private String ubicacion;
     private String fecha;
@@ -20,11 +20,9 @@ public class EventoEspecial {
     private String emoji;
     private String createdAt;
 
-    // Constructor vacío
     public EventoEspecial() {
     }
 
-    // Constructor con parámetros
     public EventoEspecial(String id, String titulo, String tipo, String descripcion,
                          String ubicacion, String fecha, String hora, String adminCreadorId,
                          int participantes, int maxParticipantes, double latitud,
@@ -45,7 +43,7 @@ public class EventoEspecial {
         this.createdAt = createdAt;
     }
 
-    // Getters y Setters
+
     public String getId() {
         return id;
     }

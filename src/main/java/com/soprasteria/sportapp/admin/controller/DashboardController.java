@@ -58,17 +58,14 @@ public class DashboardController {
 
     @FXML
     public void initialize() {
-        // Verificar sesión activa
         if (!SessionManager.getInstance().tieneSesion()) {
             navToLogin();
             return;
         }
 
-        // Mostrar nombre del admin
         Administrador admin = SessionManager.getInstance().getAdminLogueado();
         nombreAdminLabel.setText(admin.getNombre());
 
-        // Cargar estadísticas
         cargarEstadisticas();
         cargarGraficos();
     }
@@ -77,7 +74,6 @@ public class DashboardController {
      * Carga las estadísticas principales.
      */
     private void cargarEstadisticas() {
-        // Total usuarios
         UsuarioService.obtenerUsuarios(null)
                 .thenAccept(usuarios -> Platform.runLater(() -> {
                     totalUsuariosLabel.setText(String.valueOf(usuarios.size()));
@@ -87,7 +83,6 @@ public class DashboardController {
                     return null;
                 });
 
-        // Total eventos
         EventoService.obtenerEventos(null)
                 .thenAccept(eventos -> Platform.runLater(() -> {
                     totalEventosLabel.setText(String.valueOf(eventos.size()));
@@ -97,7 +92,6 @@ public class DashboardController {
                     return null;
                 });
 
-        // Solicitudes pendientes
         SoporteService.obtenerSolicitudes("estado=eq.pendiente")
                 .thenAccept(solicitudes -> Platform.runLater(() -> {
                     solicitudesPendientesLabel.setText(String.valueOf(solicitudes.size()));
@@ -114,7 +108,6 @@ public class DashboardController {
     private void cargarGraficos() {
         EventoService.obtenerEventos(null)
                 .thenAccept(eventos -> Platform.runLater(() -> {
-                    // Contar eventos por deporte
                     java.util.Map<String, Integer> eventosPorDeporte = new java.util.HashMap<>();
 
                     eventos.forEach(evento -> {
@@ -125,7 +118,6 @@ public class DashboardController {
                         );
                     });
 
-                    // Llenar gráfico
                     XYChart.Series<String, Number> series = new XYChart.Series<>();
                     series.setName("Eventos por deporte");
 

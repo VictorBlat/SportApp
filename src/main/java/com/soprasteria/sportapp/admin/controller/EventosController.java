@@ -51,7 +51,6 @@ public class EventosController {
         filtroDeporte.setOnAction(e -> aplicarFiltroDeporte());
     }
 
-    // ── Tabla ──────────────────────────────────────────────────────────────
 
     private void configurarTabla() {
         colTitulo.setCellValueFactory(c ->
@@ -74,7 +73,6 @@ public class EventosController {
             return new SimpleStringProperty(creador);
         });
 
-        // Participantes con barra de progreso
         colParticipantes.setCellFactory(col -> new TableCell<>() {
             private final ProgressBar pb = new ProgressBar(0);
             private final Label lbl = new Label();
@@ -109,7 +107,6 @@ public class EventosController {
                 btnEliminar.setDisable(sel == null));
     }
 
-    // ── Carga ──────────────────────────────────────────────────────────────
 
     private void cargarEventos() {
         EventoService.obtenerEventos(null)
@@ -137,7 +134,6 @@ public class EventosController {
         filtroDeporte.getSelectionModel().selectFirst();
     }
 
-    // ── Acciones ───────────────────────────────────────────────────────────
 
     @FXML
     private void handleBuscar() {
@@ -147,16 +143,13 @@ public class EventosController {
             return;
         }
 
-        EventoService.buscarEventos(termino)
-                .thenAccept(eventos -> Platform.runLater(() -> {
-                    listaEventos.setAll(eventos);
-                    contadorLabel.setText(eventos.size() + " resultados");
-                }))
-                .exceptionally(e -> {
-                    Platform.runLater(() ->
-                            AlertHelper.mostrarError("Error", "Error en la búsqueda: " + e.getMessage()));
-                    return null;
-                });
+        String terminoLower = termino.toLowerCase();
+        List<EventoActividad> filtrados = todosLosEventos.stream()
+                .filter(e -> (e.getTitulo()  != null && e.getTitulo().toLowerCase().contains(terminoLower))
+                        || (e.getDeporte() != null && e.getDeporte().toLowerCase().contains(terminoLower)))
+                .collect(Collectors.toList());
+        listaEventos.setAll(filtrados);
+        contadorLabel.setText(filtrados.size() + " resultados");
     }
 
     @FXML
@@ -204,7 +197,6 @@ public class EventosController {
         }
     }
 
-    // ── Navegación ─────────────────────────────────────────────────────────
 
     @FXML private void navToDashboard()         { navToScene("/fxml/dashboard.fxml",          "Dashboard"); }
     @FXML private void navToUsuarios()          { navToScene("/fxml/usuarios.fxml",            "Gestión de Usuarios"); }

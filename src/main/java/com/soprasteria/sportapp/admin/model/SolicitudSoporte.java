@@ -10,15 +10,13 @@ public class SolicitudSoporte {
     private String usuarioNombre;
     private String asunto;
     private String descripcion;
-    private String estado; // 'pendiente', 'en_revision', 'resuelto'
+    private String estado;
     private String createdAt;
     private String resolvitoAt;
 
-    // Constructor vacío
     public SolicitudSoporte() {
     }
 
-    // Constructor con parámetros
     public SolicitudSoporte(String id, String usuarioId, String usuarioNombre,
                            String asunto, String descripcion, String estado,
                            String createdAt, String resolvitoAt) {
@@ -32,7 +30,7 @@ public class SolicitudSoporte {
         this.resolvitoAt = resolvitoAt;
     }
 
-    // Getters y Setters
+
     public String getId() {
         return id;
     }
