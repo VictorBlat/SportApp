@@ -110,7 +110,6 @@ public class EstadisticasController {
     }
 
     private void cargarMensajes() {
-        // Usa service role key para saltar RLS y contar todos los mensajes
         SupabaseService.countFromTableAdmin("mensaje")
                 .thenAccept(result -> Platform.runLater(() -> {
                     if (result != null && result.size() > 0) {
@@ -168,7 +167,6 @@ public class EstadisticasController {
                 .exceptionally(e -> null);
     }
 
-    // ── Navegación ──────────────────────────────────────────────────────────
 
     @FXML private void navToDashboard()         { navToScene("/fxml/dashboard.fxml",         "Dashboard"); }
     @FXML private void navToUsuarios()          { navToScene("/fxml/usuarios.fxml",           "Gestión de Usuarios"); }

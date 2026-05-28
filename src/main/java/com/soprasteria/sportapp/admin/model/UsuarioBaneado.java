@@ -14,11 +14,9 @@ public class UsuarioBaneado {
     private String fechaBaneo;
     private boolean activo;
 
-    // Constructor vacío
     public UsuarioBaneado() {
     }
 
-    // Constructor con parámetros
     public UsuarioBaneado(String id, String usuarioId, String usuarioNombre,
                          String motivo, String adminId, String adminNombre,
                          String fechaBaneo, boolean activo) {
@@ -32,7 +30,7 @@ public class UsuarioBaneado {
         this.activo = activo;
     }
 
-    // Getters y Setters
+
     public String getId() {
         return id;
     }

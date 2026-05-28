@@ -9,11 +9,8 @@ class SessionManagerTest {
 
     @BeforeEach
     void limpiarSesion() {
-        // Asegurar estado limpio antes de cada test
         SessionManager.getInstance().cerrarSesion();
     }
-
-    // ── Singleton ─────────────────────────────────────────────────────────
 
     @Test
     void getInstance_siempreDevuelveLaMismaInstancia() {
@@ -22,7 +19,6 @@ class SessionManagerTest {
         assertSame(s1, s2);
     }
 
-    // ── Sin sesión ────────────────────────────────────────────────────────
 
     @Test
     void sinSesion_tieneSesion_esFalse() {
@@ -34,7 +30,6 @@ class SessionManagerTest {
         assertNull(SessionManager.getInstance().getAdminLogueado());
     }
 
-    // ── Iniciar sesión ────────────────────────────────────────────────────
 
     @Test
     void iniciarSesion_guardaElAdmin() {
@@ -48,7 +43,6 @@ class SessionManagerTest {
         assertEquals("Admin Principal", SessionManager.getInstance().getAdminLogueado().getNombre());
     }
 
-    // ── Cerrar sesión ─────────────────────────────────────────────────────
 
     @Test
     void cerrarSesion_eliminaElAdmin() {
@@ -67,7 +61,6 @@ class SessionManagerTest {
         assertDoesNotThrow(() -> SessionManager.getInstance().cerrarSesion());
     }
 
-    // ── Cambio de sesión ──────────────────────────────────────────────────
 
     @Test
     void iniciarSesion_segundaVez_sobreescribeElAdmin() {

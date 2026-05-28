@@ -65,7 +65,6 @@ class EventoEspecialTest {
         assertEquals("🏆",               e.getEmoji());
     }
 
-    // ── getEmojiPorTipo ───────────────────────────────────────────────────
 
     @Test
     void getEmojiPorTipo_benefico_devuelveCorazon() {

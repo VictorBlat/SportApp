@@ -12,11 +12,9 @@ public class Usuario {
     private String createdAt;
     private boolean baneado;
 
-    // Constructor vacío
     public Usuario() {
     }
 
-    // Constructor con parámetros
     public Usuario(String id, String nombre, String email, String ubicacion, String createdAt, boolean baneado) {
         this.id = id;
         this.nombre = nombre;
@@ -26,7 +24,7 @@ public class Usuario {
         this.baneado = baneado;
     }
 
-    // Getters y Setters
+
     public String getId() {
         return id;
     }

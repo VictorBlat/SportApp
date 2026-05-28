@@ -39,10 +39,8 @@ public class UsuariosController {
     @FXML private Button btnBanear;
     @FXML private Button btnDesbanear;
 
-    // Mapa usuarioId -> registro de baneo activo
     private final Map<String, UsuarioBaneado> baneosActivos = new HashMap<>();
     private final ObservableList<Usuario> listaUsuarios = FXCollections.observableArrayList();
-    // Copia completa para filtrar localmente sin volver al servidor
     private final java.util.List<Usuario> todosLosUsuarios = new ArrayList<>();
 
     @FXML
@@ -53,15 +51,12 @@ public class UsuariosController {
         configurarSeleccion();
         cargarUsuarios();
 
-        // Búsqueda en tiempo real
         buscadorField.textProperty().addListener((obs, old, nuevo) -> {
             if (nuevo.isBlank()) {
                 cargarUsuarios();
             }
         });
     }
-
-    // ── Configuración de la tabla ──────────────────────────────────────────
 
     private void configurarTabla() {
         colNombre.setCellValueFactory(c ->
@@ -82,7 +77,6 @@ public class UsuariosController {
             return new SimpleStringProperty(baneado ? "🚫 Baneado" : "✅ Activo");
         });
 
-        // Color rojo en filas baneadas
         tablaUsuarios.setRowFactory(tv -> new TableRow<>() {
             @Override
             protected void updateItem(Usuario usuario, boolean empty) {
@@ -116,7 +110,6 @@ public class UsuariosController {
         });
     }
 
-    // ── Carga de datos ─────────────────────────────────────────────────────
 
     private void cargarUsuarios() {
         UsuarioService.obtenerUsuarios(null)
@@ -131,7 +124,6 @@ public class UsuariosController {
     }
 
     private void cargarBaneosYActualizar(List<Usuario> usuarios) {
-        // Cargar todos los baneos activos de una vez
         UsuarioService.obtenerTodosBaneos().thenAccept(baneos -> {
             baneosActivos.clear();
             baneos.forEach(b -> baneosActivos.put(b.getUsuarioId(), b));
@@ -144,7 +136,6 @@ public class UsuariosController {
                 tablaUsuarios.refresh();
             });
         }).exceptionally(e -> {
-            // Si falla la carga de baneos, mostramos usuarios sin estado de baneo
             Platform.runLater(() -> {
                 todosLosUsuarios.clear();
                 todosLosUsuarios.addAll(usuarios);
@@ -155,7 +146,6 @@ public class UsuariosController {
         });
     }
 
-    // ── Acciones ───────────────────────────────────────────────────────────
 
     @FXML
     private void handleBuscar() {
@@ -165,7 +155,6 @@ public class UsuariosController {
             return;
         }
 
-        // Filtrado local sobre la lista ya cargada (evita llamada al servidor)
         String terminoLower = termino.toLowerCase();
         java.util.List<Usuario> filtrados = todosLosUsuarios.stream()
                 .filter(u -> u.getNombre() != null &&
@@ -268,7 +257,6 @@ public class UsuariosController {
         }
     }
 
-    // ── Navegación ─────────────────────────────────────────────────────────
 
     @FXML private void navToDashboard()        { navToScene("/fxml/dashboard.fxml",         "Dashboard"); }
     @FXML private void navToEventos()          { navToScene("/fxml/eventos.fxml",            "Gestión de Eventos"); }

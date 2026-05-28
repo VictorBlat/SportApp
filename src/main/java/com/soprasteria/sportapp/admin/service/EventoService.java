@@ -15,10 +15,9 @@ import java.util.concurrent.CompletableFuture;
  */
 public class EventoService {
 
-    // ── Helper para extraer el nombre del creador del objeto embebido ──────
+
 
     public static String extraerNombreCreador(JsonObject obj) {
-        // Supabase devuelve el join como objeto anidado: { "perfiles": { "nombre": "..." } }
         if (obj.has("perfiles") && !obj.get("perfiles").isJsonNull()) {
             JsonObject perfil = obj.getAsJsonObject("perfiles");
             if (perfil.has("nombre") && !perfil.get("nombre").isJsonNull()) {
@@ -50,7 +49,7 @@ public class EventoService {
                 getString(obj, "fecha"),
                 getString(obj, "hora"),
                 getString(obj, "creador_id"),
-                extraerNombreCreador(obj),   // <-- nombre real del creador
+                extraerNombreCreador(obj),
                 getInt(obj, "participantes"),
                 getInt(obj, "max_participantes"),
                 getDouble(obj, "latitud"),
@@ -69,7 +68,6 @@ public class EventoService {
     public static CompletableFuture<List<EventoActividad>> obtenerEventos(String filtro) {
         return CompletableFuture.supplyAsync(() -> {
             try {
-                // select=*,perfiles(nombre) trae el nombre del creador en un objeto anidado
                 String params = filtro != null ? filtro : "select=*,perfiles(nombre)";
                 JsonArray resultado = SupabaseService.getFromTable("evento_actividad", params).get();
 
@@ -153,8 +151,6 @@ public class EventoService {
         return obtenerEventos("select=*,perfiles(nombre)&deporte=eq." + deporte);
     }
 
-    // ============= EVENTOS ESPECIALES =============
-
     /**
      * Obtiene la lista de todos los eventos especiales.
      *
@@ -205,7 +201,6 @@ public class EventoService {
      */
     public static CompletableFuture<EventoEspecial> crearEventoEspecial(EventoEspecial evento) {
         return CompletableFuture.supplyAsync(() -> {
-            // Validación
             if (evento.getTitulo() == null || evento.getTitulo().isEmpty()) {
                 throw new IllegalArgumentException("El título es obligatorio");
             }

@@ -15,7 +15,6 @@ import java.util.concurrent.CompletableFuture;
  */
 public class UsuarioService {
 
-    // ── Helpers null-safe ──────────────────────────────────────────────────
 
     private static String getString(JsonObject obj, String key) {
         return obj.has(key) && !obj.get(key).isJsonNull() ? obj.get(key).getAsString() : "";
@@ -53,7 +52,6 @@ public class UsuarioService {
         );
     }
 
-    // ── Usuarios ───────────────────────────────────────────────────────────
 
     /**
      * Obtiene la lista de todos los usuarios.
@@ -124,8 +122,6 @@ public class UsuarioService {
             }
         });
     }
-
-    // ── Baneos ─────────────────────────────────────────────────────────────
 
     /**
      * Banea un usuario.

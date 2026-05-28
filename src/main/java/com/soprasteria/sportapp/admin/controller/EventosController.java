@@ -51,7 +51,6 @@ public class EventosController {
         filtroDeporte.setOnAction(e -> aplicarFiltroDeporte());
     }
 
-    // ── Tabla ──────────────────────────────────────────────────────────────
 
     private void configurarTabla() {
         colTitulo.setCellValueFactory(c ->
@@ -74,7 +73,6 @@ public class EventosController {
             return new SimpleStringProperty(creador);
         });
 
-        // Participantes con barra de progreso
         colParticipantes.setCellFactory(col -> new TableCell<>() {
             private final ProgressBar pb = new ProgressBar(0);
             private final Label lbl = new Label();
@@ -109,7 +107,6 @@ public class EventosController {
                 btnEliminar.setDisable(sel == null));
     }
 
-    // ── Carga ──────────────────────────────────────────────────────────────
 
     private void cargarEventos() {
         EventoService.obtenerEventos(null)
@@ -137,7 +134,6 @@ public class EventosController {
         filtroDeporte.getSelectionModel().selectFirst();
     }
 
-    // ── Acciones ───────────────────────────────────────────────────────────
 
     @FXML
     private void handleBuscar() {
@@ -147,7 +143,6 @@ public class EventosController {
             return;
         }
 
-        // Filtrado local sobre la lista ya cargada (evita llamadas al servidor)
         String terminoLower = termino.toLowerCase();
         List<EventoActividad> filtrados = todosLosEventos.stream()
                 .filter(e -> (e.getTitulo()  != null && e.getTitulo().toLowerCase().contains(terminoLower))
@@ -202,7 +197,6 @@ public class EventosController {
         }
     }
 
-    // ── Navegación ─────────────────────────────────────────────────────────
 
     @FXML private void navToDashboard()         { navToScene("/fxml/dashboard.fxml",          "Dashboard"); }
     @FXML private void navToUsuarios()          { navToScene("/fxml/usuarios.fxml",            "Gestión de Usuarios"); }

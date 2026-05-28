@@ -15,7 +15,6 @@ import java.util.concurrent.CompletableFuture;
  */
 public class SoporteService {
 
-    // ── Helper null-safe ───────────────────────────────────────────────────
 
     private static String getString(JsonObject obj, String key) {
         return obj.has(key) && !obj.get(key).isJsonNull() ? obj.get(key).getAsString() : "";
@@ -44,8 +43,6 @@ public class SoporteService {
                         ? obj.get("resuelto_at").getAsString() : null
         );
     }
-
-    // ── Métodos públicos ───────────────────────────────────────────────────
 
     /**
      * Obtiene la lista de solicitudes de soporte.

@@ -17,7 +17,6 @@ import static org.junit.jupiter.api.Assertions.*;
  */
 class EventoServiceTest {
 
-    // ── Helpers de parseo ─────────────────────────────────────────────────
 
     private String getString(JsonObject obj, String key) {
         return obj.has(key) && !obj.get(key).isJsonNull() ? obj.get(key).getAsString() : "";
@@ -60,7 +59,6 @@ class EventoServiceTest {
         );
     }
 
-    // ── Parseo de EventoActividad ─────────────────────────────────────────
 
     @Test
     void eventoDesdeJson_camposCompletos_mapeaCorrectamente() {
@@ -90,7 +88,6 @@ class EventoServiceTest {
     @Test
     void eventoDesdeJson_sinPerfilesAnidados_creadorNombreVacio() {
         JsonObject obj = buildEventoJson("ev-1", "Fútbol", "Fútbol", "usr-1", null);
-        // sin objeto "perfiles"
 
         EventoActividad e = eventoDesdeJson(obj);
 
@@ -138,7 +135,6 @@ class EventoServiceTest {
         assertEquals(-0.37,e.getLongitud(), 0.001);
     }
 
-    // ── getEmojiPorTipo ───────────────────────────────────────────────────
 
     @Test
     void getEmojiPorTipo_benefico_devuelveCorazon() {
@@ -165,11 +161,9 @@ class EventoServiceTest {
         assertEquals("⭐", EventoEspecial.getEmojiPorTipo("desconocido"));
     }
 
-    // ── Validaciones de crearEventoEspecial ───────────────────────────────
 
     @Test
     void validacion_tituloVacio_esInvalido() {
-        // Reproduce la validación interna de crearEventoEspecial
         String titulo = "";
         assertTrue(titulo == null || titulo.isEmpty());
     }
@@ -192,10 +186,9 @@ class EventoServiceTest {
     void validacion_tipoInvalido_fallaValidacion() {
         assertFalse(esTipoValido("invalido"));
         assertFalse(esTipoValido(""));
-        assertFalse(esTipoValido("TORNEO")); // case sensitive
+        assertFalse(esTipoValido("TORNEO"));
     }
 
-    // ── Parseo de EventoEspecial ──────────────────────────────────────────
 
     @Test
     void eventoEspecialDesdeJson_camposCompletos_mapeaCorrectamente() {
@@ -225,7 +218,6 @@ class EventoServiceTest {
         assertEquals("🏆",              e.getEmoji());
     }
 
-    // ── Helpers ───────────────────────────────────────────────────────────
 
     private boolean esTipoValido(String tipo) {
         return tipo.equals("benefico") || tipo.equals("torneo") ||

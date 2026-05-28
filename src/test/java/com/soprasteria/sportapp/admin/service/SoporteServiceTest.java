@@ -16,7 +16,6 @@ import static org.junit.jupiter.api.Assertions.*;
  */
 class SoporteServiceTest {
 
-    // ── Helpers de parseo (misma lógica que SoporteService.solicitudDesdeJson) ──
 
     private String getString(JsonObject obj, String key) {
         return obj.has(key) && !obj.get(key).isJsonNull() ? obj.get(key).getAsString() : "";
@@ -46,7 +45,6 @@ class SoporteServiceTest {
         );
     }
 
-    // ── extraerNombreUsuario ──────────────────────────────────────────────
 
     @Test
     void extraerNombre_conPerfilesAnidados_devuelveNombre() {
@@ -60,7 +58,6 @@ class SoporteServiceTest {
         JsonObject obj = new JsonObject();
         obj.addProperty("id",         "sol-1");
         obj.addProperty("usuario_id", "usr-1");
-        // Sin "perfiles"
 
         assertEquals("", extraerNombreUsuario(obj));
     }
@@ -83,7 +80,6 @@ class SoporteServiceTest {
         assertEquals("", extraerNombreUsuario(obj));
     }
 
-    // ── Parseo de SolicitudSoporte ────────────────────────────────────────
 
     @Test
     void solicitudDesdeJson_camposCompletos_mapeaCorrectamente() {
@@ -126,7 +122,6 @@ class SoporteServiceTest {
         assertEquals("sol-3", lista.get(2).getId());
     }
 
-    // ── Estados válidos ───────────────────────────────────────────────────
 
     @Test
     void estados_pendienteEnRevisionResuelto_sonValidos() {
@@ -137,8 +132,6 @@ class SoporteServiceTest {
             assertEquals(estado, s.getEstado());
         }
     }
-
-    // ── Construcción de payloads de actualización ─────────────────────────
 
     @Test
     void payloadMarcarEnRevision_estadoCorrecto() {
@@ -161,7 +154,6 @@ class SoporteServiceTest {
 
     @Test
     void filtroConSelect_incluyePrefijo_select() {
-        // Reproduce la lógica del fix de SoporteService.obtenerSolicitudes
         String filtro = "estado=eq.pendiente";
         String params  = "select=*,perfiles(nombre)&" + filtro;
 
@@ -171,7 +163,6 @@ class SoporteServiceTest {
 
     @Test
     void filtroSinFiltro_usaSelectConJoin() {
-        // Reproduce la lógica cuando filtro == null
         String filtro = null;
         String params  = filtro != null ? "select=*,perfiles(nombre)&" + filtro
                 : "select=*,perfiles(nombre)";
@@ -179,7 +170,6 @@ class SoporteServiceTest {
         assertEquals("select=*,perfiles(nombre)", params);
     }
 
-    // ── Helpers ───────────────────────────────────────────────────────────
 
     private JsonObject buildSolicitudJson(String id, String usuarioId, String asunto,
                                           String estado, String nombreUsuario) {

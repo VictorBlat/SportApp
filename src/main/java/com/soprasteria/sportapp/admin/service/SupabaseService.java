@@ -14,7 +14,6 @@ public class SupabaseService {
     private static final OkHttpClient client = new OkHttpClient();
     private static final Gson gson = new Gson();
 
-    // Headers con anon key — sujeto a RLS (para operaciones normales)
     private static Headers.Builder getDefaultHeaders() {
         return new Headers.Builder()
                 .add("Authorization", "Bearer " + SupabaseConfig.ANON_KEY)
@@ -22,7 +21,6 @@ public class SupabaseService {
                 .add("Content-Type", "application/json");
     }
 
-    // Headers con service role key — salta RLS (solo para estadísticas admin)
     private static Headers.Builder getAdminHeaders() {
         return new Headers.Builder()
                 .add("Authorization", "Bearer " + SupabaseConfig.SERVICE_ROLE_KEY)
@@ -30,17 +28,14 @@ public class SupabaseService {
                 .add("Content-Type", "application/json");
     }
 
-    // GET normal (con RLS)
     public static CompletableFuture<JsonArray> getFromTable(String table, String params) {
         return getFromTableWithHeaders(table, params, getDefaultHeaders());
     }
 
-    // GET admin (sin RLS) — para estadísticas y conteos globales
     public static CompletableFuture<JsonArray> getFromTableAdmin(String table, String params) {
         return getFromTableWithHeaders(table, params, getAdminHeaders());
     }
 
-    // GET con conteo exacto sin traer datos — devuelve JsonArray con un objeto {"count": N}
     public static CompletableFuture<JsonArray> countFromTableAdmin(String table) {
         return CompletableFuture.supplyAsync(() -> {
             try {
@@ -56,7 +51,6 @@ public class SupabaseService {
                         .build();
 
                 try (Response response = client.newCall(request).execute()) {
-                    // Supabase devuelve el total en el header Content-Range: 0-0/TOTAL
                     String contentRange = response.header("Content-Range", "0-0/0");
                     int total = 0;
                     if (contentRange != null && contentRange.contains("/")) {
@@ -104,7 +98,6 @@ public class SupabaseService {
         });
     }
 
-    // POST — inserta un registro
     public static CompletableFuture<JsonObject> postToTable(String table, JsonObject body) {
         return CompletableFuture.supplyAsync(() -> {
             try {
@@ -131,7 +124,6 @@ public class SupabaseService {
         });
     }
 
-    // PATCH — actualiza registros
     public static CompletableFuture<Void> patchTable(String table, String filter, JsonObject body) {
         return CompletableFuture.supplyAsync(() -> {
             try {
@@ -157,7 +149,6 @@ public class SupabaseService {
         });
     }
 
-    // DELETE — elimina registros
     public static CompletableFuture<Void> deleteFromTable(String table, String filter) {
         return CompletableFuture.supplyAsync(() -> {
             try {

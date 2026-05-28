@@ -17,7 +17,6 @@ import static org.junit.jupiter.api.Assertions.*;
  */
 class UsuarioServiceTest {
 
-    // ── Helpers de parseo (misma lógica que UsuarioService internamente) ──
 
     private Usuario parsearUsuario(JsonObject obj) {
         return new Usuario(
@@ -47,7 +46,6 @@ class UsuarioServiceTest {
         return obj.has(key) && !obj.get(key).isJsonNull() ? obj.get(key).getAsString() : "";
     }
 
-    // ── Parseo de Usuario ──────────────────────────────────────────────────
 
     @Test
     void parsearUsuario_camposCompletos_mapeaCorrectamente() {
@@ -102,7 +100,6 @@ class UsuarioServiceTest {
         assertEquals("María García",lista.get(1).getNombre());
     }
 
-    // ── Filtrado local (lógica del controller) ────────────────────────────
 
     @Test
     void filtradoLocal_terminoEnNombre_devuelveCoincidencias() {
@@ -149,7 +146,6 @@ class UsuarioServiceTest {
         assertEquals(1, resultado.size());
     }
 
-    // ── Parseo de UsuarioBaneado ──────────────────────────────────────────
 
     @Test
     void parsearBaneo_activo_true_mapeaCorrectamente() {
@@ -186,7 +182,6 @@ class UsuarioServiceTest {
         assertEquals("ban-2", lista.get(1).getId());
     }
 
-    // ── Construcción del payload de baneo ────────────────────────────────
 
     @Test
     void payloadBaneo_contienesCamposObligatorios() {
@@ -210,7 +205,6 @@ class UsuarioServiceTest {
         assertFalse(payload.get("activo").getAsBoolean());
     }
 
-    // ── Helpers ───────────────────────────────────────────────────────────
 
     private JsonObject buildUsuarioJson(String id, String nombre, String email,
                                         String ubicacion, String createdAt) {

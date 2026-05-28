@@ -14,7 +14,6 @@ public class MainApp extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception {
-        // Cargar login.fxml
         FXMLLoader loader = new FXMLLoader(
                 getClass().getResource("/fxml/login.fxml")
         );
@@ -25,7 +24,6 @@ public class MainApp extends Application {
         primaryStage.setWidth(1200);
         primaryStage.setHeight(800);
         primaryStage.setOnCloseRequest(e -> {
-            // Limpiar sesión al cerrar la app
             SessionManager.getInstance().cerrarSesion();
         });
 

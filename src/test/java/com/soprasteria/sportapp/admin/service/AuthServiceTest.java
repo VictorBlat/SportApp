@@ -18,7 +18,6 @@ class AuthServiceTest {
         SessionManager.getInstance().cerrarSesion();
     }
 
-    // ── Validaciones de email ─────────────────────────────────────────────
 
     @Test
     void validarEmail_vacio_esInvalido() {
@@ -40,7 +39,6 @@ class AuthServiceTest {
         assertFalse(emailInvalido("admin@sportapp.com"));
     }
 
-    // ── Validaciones de contraseña ────────────────────────────────────────
 
     @Test
     void validarPassword_vacia_esInvalida() {
@@ -57,7 +55,6 @@ class AuthServiceTest {
         assertFalse(passwordInvalida("Admin1234"));
     }
 
-    // ── SessionManager ────────────────────────────────────────────────────
 
     @Test
     void sinSesion_tieneSesion_esFalse() {
@@ -109,14 +106,12 @@ class AuthServiceTest {
         assertEquals("adm-2", SessionManager.getInstance().getAdminLogueado().getId());
     }
 
-    // ── Singleton ─────────────────────────────────────────────────────────
 
     @Test
     void getInstance_siempreDevuelveLaMismaInstancia() {
         assertSame(SessionManager.getInstance(), SessionManager.getInstance());
     }
 
-    // ── Helpers ───────────────────────────────────────────────────────────
 
     private boolean emailInvalido(String email) {
         return email == null || email.isBlank();

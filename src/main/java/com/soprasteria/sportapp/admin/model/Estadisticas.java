@@ -11,11 +11,9 @@ public class Estadisticas {
     private int totalMensajes;
     private double ingresosTransacciones;
 
-    // Constructor vacío
     public Estadisticas() {
     }
 
-    // Constructor con parámetros
     public Estadisticas(int totalUsuarios, int totalEventos, int eventosActivos,
                        int totalMensajes, double ingresosTransacciones) {
         this.totalUsuarios = totalUsuarios;
@@ -25,7 +23,7 @@ public class Estadisticas {
         this.ingresosTransacciones = ingresosTransacciones;
     }
 
-    // Getters y Setters
+
     public int getTotalUsuarios() {
         return totalUsuarios;
     }

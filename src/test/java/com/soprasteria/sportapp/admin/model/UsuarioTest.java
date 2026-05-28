@@ -5,7 +5,6 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class UsuarioTest {
 
-    // ── Constructor y getters ──────────────────────────────────────────────
 
     @Test
     void constructor_conParametros_asignaCorrectamente() {
@@ -28,8 +27,6 @@ class UsuarioTest {
         assertFalse(u.isBaneado());
     }
 
-    // ── Setters ───────────────────────────────────────────────────────────
-
     @Test
     void setters_modificanCamposCorrectamente() {
         Usuario u = new Usuario();
@@ -48,7 +45,6 @@ class UsuarioTest {
         assertTrue(u.isBaneado());
     }
 
-    // ── toString ──────────────────────────────────────────────────────────
 
     @Test
     void toString_contieneNombreEId() {
